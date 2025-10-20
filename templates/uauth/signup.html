@@ -1,0 +1,84 @@
+{% extends '../layout/base.html' %}
+{% block title %}Signup{% endblock %}
+
+{% block style %}
+    <style>
+        .feedback.error {
+            color: red;
+        }
+        .feedback.success {
+            color: green;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container my-3">
+        <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% include '../layout/form_errors.html' %}
+            <div class="mb-3">
+                <label for="username">사용자 이름</label>
+                <input type="text" class="form-control" name="username" id="username" 
+                       value="{{ form.username.value|default:'' }}">
+                <sub id="username-feedback" class="feedback"></sub>
+            </div>
+            <div class="mb-3">
+                <label for="password1">비밀번호</label>
+                <input type="password" class="form-control" name="password1" id="password1" 
+                       value="{{ form.password1.value|default:'' }}">
+            </div>
+            <div class="mb-3">
+                <label for="password2">비밀번호 확인</label>
+                <input type="password" class="form-control" name="password2" id="password2"
+                       value="{{ form.password2.value|default:'' }}">
+            </div>
+            <div class="mb-3">
+                <label for="email">이메일</label>
+                <input type="text" class="form-control" name="email" id="email"
+                       value="{{ form.email.value|default:'' }}">
+            </div>
+            <div class="mb-3">
+                <label for="birthday">생일</label>
+                <input type="date" class="form-control" name="birthday" id="birthday"
+                       value="{{ form.birthday.value|default:'' }}">
+            </div>
+            <div class="mb-3">
+                <label for="profile" class="form-label">프로필</label>
+                <input class="form-control" type="file" id="profile" name="profile">
+            </div>
+            <button type="submit" class="btn btn-primary">회원가입</button>
+        </form>
+    </div>
+{% endblock content %}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const $username = document.getElementById('username');
+        const $usernameFeedback = document.getElementById('username-feedback');
+
+        $username.addEventListener('input', () => {
+            $usernameFeedback.classList.remove('success', 'error');
+            const usernameValue = $username.value;
+            if(usernameValue.length < 4) {
+                $usernameFeedback.classList.add('error');
+                $usernameFeedback.textContent = '아이디는 4자 이상이어야 합니다.';
+                return;
+            }
+            fetch(`{% url 'uauth:check_username' %}?username=${usernameValue}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    const {available, message} = data;
+                    $usernameFeedback.textContent = message;
+                    if (available) {
+                        $usernameFeedback.classList.add('success');
+                    } else {
+                        $usernameFeedback.classList.add('error');
+                    }
+                });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,293 @@
+.div-wrapper {
+  background-color: #55609a;
+  width: 100%;
+  min-width: 1920px;
+  min-height: 3240px;
+  position: relative;
+}
+
+.div-wrapper .rectangle {
+  position: absolute;
+  top: 2953px;
+  left: 573px;
+  width: 774px;
+  height: 129px;
+  background-color: #eff4ff;
+  border-radius: 115px;
+}
+
+.div-wrapper .auto-fix {
+  position: absolute;
+  top: 2981px;
+  left: 650px;
+  width: 619px;
+  height: 73px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Pretendard-SemiBold", Helvetica;
+  font-weight: 600;
+  color: #55609a;
+  font-size: 50px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.div-wrapper .auto-fix-b {
+  position: absolute;
+  top: 297px;
+  left: 474px;
+  width: 1000px;
+  height: 500px;
+  aspect-ratio: 2.01;
+}
+
+.div-wrapper .text-wrapper {
+  position: absolute;
+  top: 2257px;
+  left: 371px;
+  width: 1177px;
+  height: 190px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.99;
+  font-family: "Pretendard-SemiBold", Helvetica;
+  font-weight: 600;
+  color: #eff4ff;
+  font-size: 65px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.div-wrapper .div {
+  top: 2419px;
+  left: 371px;
+  width: 1177px;
+  height: 191px;
+  font-family: "Pretendard-Medium", Helvetica;
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 60px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.99;
+  color: #eff4ff;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+.div-wrapper .p {
+  top: 2563px;
+  left: 371px;
+  width: 1177px;
+  height: 191px;
+  font-family: "Pretendard-Medium", Helvetica;
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 60px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.99;
+  color: #eff4ff;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+.div-wrapper .text-wrapper-2 {
+  top: 1222px;
+  left: 395px;
+  width: 1130px;
+  height: 155px;
+  font-family: "Pretendard-SemiBold", Helvetica;
+  font-weight: 600;
+  font-size: 65px;
+  line-height: normal;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.99;
+  color: #eff4ff;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+.div-wrapper .element {
+  top: 1410px;
+  left: 395px;
+  width: 1130px;
+  height: 155px;
+  font-family: "Pretendard-Medium", Helvetica;
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 60px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.99;
+  color: #eff4ff;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+.div-wrapper .text-wrapper-3 {
+  top: 1643px;
+  left: 360px;
+  width: 1200px;
+  height: 155px;
+  font-family: "Pretendard-Medium", Helvetica;
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 60px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.99;
+  color: #eff4ff;
+  text-align: center;
+  letter-spacing: 0;
+}
+/* Original CSS code should be injected here */
+
+.div-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 297px;
+}
+
+.content-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 442px;
+}
+
+.features-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 454px;
+}
+
+.cta-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 143px;
+  padding-bottom: 158px;
+}
+
+.div-wrapper .rectangle {
+  position: relative;
+  top: auto;
+  left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.div-wrapper .rectangle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.div-wrapper .rectangle:active {
+  transform: translateY(0);
+}
+
+.div-wrapper .auto-fix {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  height: auto;
+  pointer-events: none;
+}
+
+.div-wrapper .auto-fix-b {
+  position: relative;
+  top: auto;
+  left: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.div-wrapper .text-wrapper {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  max-width: 1177px;
+  height: auto;
+  margin-bottom: 24px;
+}
+
+.div-wrapper .div {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  max-width: 1177px;
+  height: auto;
+  margin-bottom: 0;
+}
+
+.div-wrapper .p {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  max-width: 1177px;
+  height: auto;
+  margin-top: 0;
+}
+
+.div-wrapper .text-wrapper-2 {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  max-width: 1130px;
+  height: auto;
+  margin-bottom: 33px;
+}
+
+.div-wrapper .element {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  max-width: 1130px;
+  height: auto;
+  margin-bottom: 78px;
+}
+
+.div-wrapper .text-wrapper-3 {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  max-width: 1200px;
+  height: auto;
+}

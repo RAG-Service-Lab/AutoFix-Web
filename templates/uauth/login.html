@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Auto FIX - 로그인</title>
+    <link rel="stylesheet" href="{% static 'css/login/globals.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/login/style.css' %}" />
+  </head>
+  <body>
+    <main class="div-wrapper">
+      <div class="login-card">
+        <img class="rectangle" src="{% static 'images/login/Rectangle5.svg' %}" alt="" role="presentation" />
+        <nav class="back-navigation">
+          <a href="#" class="text-wrapper-2" aria-label="뒤로 가기">&lt;</a>
+        </nav>
+        <header class="login-header">
+          <h1 class="text-wrapper">Auto FIX</h1>
+          <p class="p">Auto Fix에 오신 걸 환영합니다</p>
+        </header>
+        <form class="login-form" action="#" method="post" novalidate>
+          <div class="form-group">
+            <label for="email" class="visually-hidden">이메일</label>
+            <img class="img" src="{% static 'images/login/Rectangle6.svg' %}" alt="" role="presentation" />
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="text-wrapper-3"
+              placeholder="e-mail"
+              required
+              autocomplete="email"
+              aria-required="true"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password" class="visually-hidden">비밀번호</label>
+            <img class="rectangle-2" src="{% static 'images/login/Rectangle8.svg' %}" alt="" role="presentation" />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="text-wrapper-4"
+              placeholder="password"
+              required
+              autocomplete="current-password"
+              aria-required="true"
+            />
+          </div>
+          <div class="forgot-password-wrapper">
+            <a href="#" class="div">비밀번호를 잊어버리셨나요?</a>
+          </div>
+          <button type="submit" class="login-button">
+            <img class="rectangle-3" src="{% static 'images/login/Rectangle11.svg' %}" alt="" role="presentation" />
+            <span class="text-wrapper-5">로그인하기</span>
+          </button>
+        </form>
+        <footer class="signup-footer">
+          <span class="text-wrapper-6">계정이 없으신가요?</span>
+          <a href="#" class="text-wrapper-7">가입하기</a>
+        </footer>
+      </div>
+    </main>
+  </body>
+</html>
