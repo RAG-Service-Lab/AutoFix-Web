@@ -135,4 +135,4 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 로그인 성공 후 리다이렉트 페이지 지정
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/chat/'

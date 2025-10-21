@@ -1,0 +1,230 @@
+.div,
+.div * {
+  box-sizing: border-box;
+}
+.div {
+  background: #eff4ff;
+  height: 1080px;
+  position: relative;
+  overflow: hidden;
+}
+.rectangle-5 {
+  border-radius: 0px;
+  width: 756px;
+  height: 868px;
+  position: absolute;
+  left: 582px;
+  top: 110px;
+  overflow: visible;
+}
+.div2 {
+  color: #aec3ef;
+  text-align: center;
+  font-family: "Pretendard-Black", sans-serif;
+  font-size: 75px;
+  font-weight: 900;
+  position: absolute;
+  left: 116px;
+  top: 70px;
+  width: 100px;
+  height: 122px;
+}
+.div3 {
+  color: #56609b;
+  text-align: left;
+  font-family: "Pretendard-SemiBold", sans-serif;
+  font-size: 48px;
+  font-weight: 600;
+  position: absolute;
+  left: 645px;
+  top: 142px;
+  width: 629px;
+  height: 103px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.rectangle-6 {
+  border-radius: 0px;
+  width: 613px;
+  height: 75px;
+  position: absolute;
+  left: 645px;
+  top: 323px;
+  overflow: visible;
+}
+.div4 {
+  color: #56609b;
+  text-align: left;
+  font-family: "Pretendard-Medium", sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  opacity: 0.8;
+  position: absolute;
+  left: 676px;
+  top: 326px;
+  width: 472px;
+  height: 69px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.rectangle-11 {
+  border-radius: 0px;
+  width: 613px;
+  height: 75px;
+  position: absolute;
+  left: 645px;
+  top: 414px;
+  overflow: visible;
+}
+.div5 {
+  color: #ffffff;
+  text-align: center;
+  font-family: "Pretendard-Medium", sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  opacity: 0.8;
+  position: absolute;
+  left: 716px;
+  top: 417px;
+  width: 472px;
+  height: 69px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.div6 {
+  color: #56609b;
+  text-align: left;
+  font-family: "Pretendard-SemiBold", sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  position: absolute;
+  left: 660px;
+  top: 275px;
+  width: 393px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.rectangle-8 {
+  border-radius: 0px;
+  width: 328px;
+  height: 65px;
+  position: absolute;
+  left: 922px;
+  top: 853px;
+  overflow: visible;
+}
+.div7 {
+  color: #ffffff;
+  text-align: center;
+  font-family: "Pretendard-SemiBold", sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  position: absolute;
+  left: 999px;
+  top: 864px;
+  width: 174px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.div8 {
+  color: #56609b;
+  text-align: left;
+  font-family: "Pretendard-Regular", sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  position: absolute;
+  left: 660px;
+  top: 864px;
+  width: 246px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.div9 {
+  color: #56609b;
+  text-align: left;
+  font-family: "Pretendard-SemiBold", sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  position: absolute;
+  left: 660px;
+  top: 527px;
+  width: 393px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.rectangle-9 {
+  border-radius: 0px;
+  width: 613px;
+  height: 75px;
+  position: absolute;
+  left: 645px;
+  top: 575px;
+  overflow: visible;
+}
+.div10 {
+  color: #56609b;
+  text-align: left;
+  font-family: "Pretendard-Medium", sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  opacity: 0.8;
+  position: absolute;
+  left: 676px;
+  top: 578px;
+  width: 472px;
+  height: 69px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.rectangle-10 {
+  border-radius: 0px;
+  width: 613px;
+  height: 75px;
+  position: absolute;
+  left: 645px;
+  top: 670px;
+  overflow: visible;
+}
+.div11 {
+  color: #56609b;
+  text-align: left;
+  font-family: "Pretendard-Medium", sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  opacity: 0.8;
+  position: absolute;
+  left: 676px;
+  top: 673px;
+  width: 472px;
+  height: 69px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+._8-16 {
+  color: #838485;
+  text-align: left;
+  font-family: "Pretendard-Medium", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  position: absolute;
+  left: 659px;
+  top: 754px;
+  width: 598px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
