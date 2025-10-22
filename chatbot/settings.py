@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'uauth',
-    'chat'
+    'chat',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 로그인 성공 후 리다이렉트 페이지 지정
 LOGIN_REDIRECT_URL = '/chat/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "wheneverchoice@gmail.com"  # 또는 직접 문자열로 "example@gmail.com"
+EMAIL_HOST_PASSWORD = "oawx ejxx rnvu havp"  # 앱 비밀번호
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

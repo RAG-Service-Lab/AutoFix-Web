@@ -3,6 +3,11 @@ from django.contrib import auth, messages
 from uauth.entity.models import UserForm
 from uauth.service.uauth_service import UAuthServiceImpl
 from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from uauth.entity.models import UserForm
+from rest_framework.exceptions import ValidationError
 
 uauth_service = UAuthServiceImpl.get_instance()
 
@@ -15,6 +20,53 @@ class MyLoginView(LoginView):
         print("로그인 실패:", form.errors)  # 터미널에 오류 출력
         return super().form_invalid(form)
 
+
+class SendVerificationCodeView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        if not email:
+            return Response({"message": "이메일을 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+
+        service = UAuthServiceImpl.get_instance()
+        try:
+            service.send_verification_email(email)
+            return Response({"message": "인증 코드가 이메일로 전송되었습니다."}, status=status.HTTP_200_OK)
+        except ValidationError as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VerifyCodeView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        code = request.data.get("code")
+
+        service = UAuthServiceImpl.get_instance()
+        try:
+            service.verify_code(email, code)
+            return Response({"message": "인증이 완료되었습니다."}, status=status.HTTP_200_OK)
+        except ValidationError as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserRegisterView(APIView):
+    def post(self, request):
+        form = UserForm(data=request.data)  # ✅ data=로 전달
+        if not form.is_valid():
+            return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        service = UAuthServiceImpl.get_instance()
+        email = form.cleaned_data.get('email')
+        code = request.data.get('verification_code')  # 클라이언트에서 받은 인증코드
+
+        # 이메일 인증 여부 검증
+        if not service.verify_code(email, code):  # ✅ Service에 verify_code 메서드 필요
+            return Response({"message": "이메일 인증을 완료해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 회원 생성
+        user = service.create(form)
+        return Response({"message": "회원가입이 완료되었습니다."}, status=status.HTTP_201_CREATED)
+
+
 def logout(request):
     auth.logout(request)
     return redirect('uauth:login')
@@ -22,9 +74,7 @@ def logout(request):
 def signup(request):
     if request.method == 'POST':
         form = UserForm(request.POST, request.FILES)
-        print('here1')
         if form.is_valid():
-            print('here2')
             user = uauth_service.create(form)
             username = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
@@ -35,7 +85,6 @@ def signup(request):
             print(form.errors)
             return redirect('uauth:login')
     else:
-        print('here3')
         form = UserForm()
 
     return render(request, 'uauth/signup.html', {'form':form})
@@ -46,30 +95,15 @@ def reset_password(request):
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
 
-        errors = []
-
-        if password1 != password2:
-            errors.append("비밀번호가 일치하지 않습니다.")
-        else:
-            try:
-                validate_password(password2)
-            except ValidationError as e:
-                errors.extend(e.messages)
-
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            errors.append("존재하지 않는 이메일입니다.")
+        user, errors = uauth_service.reset_password(email, password1, password2)
 
         if errors:
-            return render(request, 'uauth/password_reset.html', {'errors': errors, 'email': email})
-        
-        # ✅ 비밀번호 변경
-        user.set_password(password2)
-        user.save()
-        return redirect('uauth:login')  # 완료 후 로그인 페이지
+            return render(request, 'uauth/reset_password.html', {'errors': errors, 'email': email})
 
-    return render(request, 'uauth/password_reset.html')
+        messages.success(request, "비밀번호가 성공적으로 변경되었습니다.")
+        return redirect('uauth:login')
+
+    return render(request, 'uauth/reset_password.html')
 
 
 def check_username(request):

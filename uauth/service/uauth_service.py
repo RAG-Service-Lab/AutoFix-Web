@@ -3,6 +3,9 @@ from uauth.repository.uauth_repository import UAuthRepositoryImpl
 from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMessage
+from django.utils.crypto import get_random_string
+from django.shortcuts import get_object_or_404
 
 
 class UAuthService(ABC):
@@ -16,6 +19,14 @@ class UAuthService(ABC):
 
     @abstractmethod
     def reset_password(self, email, password1, password2):
+        pass
+
+    @abstractmethod
+    def send_verification_email(self, email):
+        pass
+
+    @abstractmethod
+    def verify_code(self, email, code):
         pass
 
 
@@ -79,3 +90,35 @@ class UAuthServiceImpl(UAuthService):
             user = self.__uauth_repository.update_password(user, password2)
 
         return user, []
+
+    def send_verification_email(self, email):
+        # 이메일 중복체크
+        if self.__uauth_repository.get_user_by_email(email):
+            raise ValidationError("이미 가입된 이메일입니다.")
+
+        # 인증코드 생성
+        code = get_random_string(length=6)
+
+        # 이메일 발송
+        email_message = EmailMessage(
+            subject='[서비스명] 이메일 인증코드',
+            body=f"인증코드는 {code} 입니다.",
+            to=[email],
+        )
+        email_message.send()
+
+        # DB 저장
+        self.__uauth_repository.save_verification_code(email, code)
+
+        return code  # (테스트 용도로 반환, 실제 운영에서는 제외)
+
+    def verify_code(self, email, code):
+        verify = self.__uauth_repository.get_verification_code(email)
+        if not verify:
+            raise ValidationError("인증 정보가 존재하지 않습니다.")
+        if verify.code != code:
+            raise ValidationError("잘못된 인증 코드입니다.")
+
+        # 성공 시 코드 삭제
+        self.__uauth_repository.delete_verification_code(email)
+        return True

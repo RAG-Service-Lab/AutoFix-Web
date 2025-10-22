@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from uauth.entity.models import UserDetail
+from uauth.entity.models import UserDetail, Verify
 from django.contrib.auth.models import User
 
 
@@ -18,6 +18,18 @@ class UAuthRepository(ABC):
 
     @abstractmethod
     def update_password(self, user, new_password):
+        pass
+
+    @abstractmethod
+    def save_verification_code(self, email, code):
+        pass
+
+    @abstractmethod
+    def get_verification_code(self, email):
+        pass
+
+    @abstractmethod
+    def delete_verification_code(self, email):
         pass
 
 
@@ -57,5 +69,17 @@ class UAuthRepositoryImpl(UAuthRepository):
 
     def update_password(self, user, new_password):
         user.set_password(new_password)
-        user.save()
+        user.save(update_fields=['password'])
         return user
+
+    def save_verification_code(self, email, code):
+        Verify.objects.update_or_create(email=email, defaults={"code": code})
+
+    def get_verification_code(self, email):
+        try:
+            return Verify.objects.get(email=email)
+        except Verify.DoesNotExist:
+            return None
+
+    def delete_verification_code(self, email):
+        Verify.objects.filter(email=email).delete()
