@@ -145,8 +145,8 @@
             background-color: #fff;
             border-radius: 12px;
             width: 80%;
-            max-width: 1200px;
-            max-height: 90%;
+            max-width: 600px;
+            max-height: 100%;
             overflow-y: auto;
             padding: 0;
             display: flex;
@@ -203,20 +203,23 @@
                     placeholder="password" required>
             </div>
             
-            <a href="#" class="forgot-password">비밀번호를 잊어버리셨나요?</a>
+        <button type="button" id="openModalBtn2" class="forgot-password">
+            비밀번호를 잊어버리셨나요?
+        </button>
+
             <button type="submit" class="login-button">로그인하기</button>
         </form>
 
         <div class="signup-link">
             <span>계정이 없으신가요?</span>
-            <a id="openModalBtn" href="#">가입하기</a>
+            <a id="openModalBtn1" href="#">가입하기</a>
         </div>
     </div>
 
     <!-- 🔹 모달 구조 -->
     <div id="signupModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" id="closeModalBtn">&times;</span>
+            <span class="close-btn" id="closeModalBtn1">&times;</span>
             <div id="modal-body">
                 <!-- iframe으로 signup.html 로드 -->
             </div>
@@ -224,12 +227,13 @@
     </div>
 
     <script>
-        const openBtn = document.getElementById('openModalBtn');
-        const closeBtn = document.getElementById('closeModalBtn');
+        const openBtn1 = document.getElementById('openModalBtn1');
+        const closeBtn1 = document.getElementById('closeModalBtn1');
+        const openBtn2 = document.getElementById('openModalBtn2');
         const modal = document.getElementById('signupModal');
         const modalBody = document.getElementById('modal-body');
 
-        openBtn.addEventListener('click', async (e) => {
+        openBtn1.addEventListener('click', async (e) => {
             e.preventDefault();
             modal.style.display = 'flex';
             modalBody.innerHTML = '<p style="text-align:center;">로딩 중...</p>';
@@ -246,12 +250,28 @@
             }
         });
 
+        openBtn2.addEventListener('click', async (e) => {
+            e.preventDefault();
+            modal.style.display = 'flex';
+            modalBody.innerHTML = '<p style="text-align:center;">로딩 중...</p>';
+
+            try {
+                const res = await fetch("{% url 'uauth:reset_password' %}");
+                if (!res.ok) throw new Error('파일을 불러올 수 없습니다.');
+                const html = await res.text();
+
+                // 🔹 iframe으로 signup.html 로드, 내부 컨테이너 중앙 정렬 유지
+                modalBody.innerHTML = `<iframe srcdoc="${html.replace(/"/g, '&quot;')}"></iframe>`;
+            } catch (err) {
+                modalBody.innerHTML = `<p style="color:red;">불러오기 실패: ${err.message}</p>`;
+            }
+        });
+
         // 닫기 버튼 클릭
-        closeBtn.addEventListener('click', () => {
+        closeBtn1.addEventListener('click', () => {
             modal.style.display = 'none';
             modalBody.innerHTML = '';
         });
-
         // 모달 배경 클릭 시 닫기
         window.addEventListener('click', (e) => {
             if (e.target === modal) {
@@ -259,6 +279,13 @@
                 modalBody.innerHTML = '';
             }
         });
+
+        window.addEventListener('message', (event) => {
+        if (event.data?.type === 'signupComplete') {
+            // 모달 닫기
+            modal.style.display = 'none';
+            modalBody.innerHTML = ''; // iframe 내용 제거
+        }})
     </script>
 
 </body>

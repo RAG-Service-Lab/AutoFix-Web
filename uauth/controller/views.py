@@ -26,9 +26,6 @@ def signup(request):
         if form.is_valid():
             print('here2')
             user = uauth_service.create(form)
-            messages.success(request, '회원가입 완료!')
-
-            # 자동 로그인 처리
             username = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
             user = auth.authenticate(username=username, password=password)
@@ -43,8 +40,41 @@ def signup(request):
 
     return render(request, 'uauth/signup.html', {'form':form})
 
+def reset_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        errors = []
+
+        if password1 != password2:
+            errors.append("비밀번호가 일치하지 않습니다.")
+        else:
+            try:
+                validate_password(password2)
+            except ValidationError as e:
+                errors.extend(e.messages)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            errors.append("존재하지 않는 이메일입니다.")
+
+        if errors:
+            return render(request, 'uauth/password_reset.html', {'errors': errors, 'email': email})
+        
+        # ✅ 비밀번호 변경
+        user.set_password(password2)
+        user.save()
+        return redirect('uauth:login')  # 완료 후 로그인 페이지
+
+    return render(request, 'uauth/password_reset.html')
+
+
 def check_username(request):
     username = request.GET.get('username')
     if uauth_service.check_username(username):
         return JsonResponse({'available': False, 'message': '이미 사용중인 ID입니다.'})
     return JsonResponse({'available': True, 'message': '사용 가능한 ID입니다.'})
+

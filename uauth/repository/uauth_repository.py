@@ -12,6 +12,14 @@ class UAuthRepository(ABC):
     def check_username(self, username):
         pass
 
+    @abstractmethod
+    def get_user_by_email(self, email):
+        pass
+
+    @abstractmethod
+    def update_password(self, user, new_password):
+        pass
+
 
 class UAuthRepositoryImpl(UAuthRepository):
     __instance = None
@@ -40,3 +48,14 @@ class UAuthRepositoryImpl(UAuthRepository):
     
     def check_username(self, username):
         return User.objects.filter(username=username).exists()
+    
+    def get_user_by_email(self, email):
+        try:
+            return User.objects.get(email=email)
+        except User.DoesNotExist:
+            return None
+
+    def update_password(self, user, new_password):
+        user.set_password(new_password)
+        user.save()
+        return user

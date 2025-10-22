@@ -152,14 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (errors.length > 0 || pw1.value !== pw2.value) {
       e.preventDefault();
       alert("비밀번호 조건을 확인하세요.");
-    } else {
-        e.preventDefault();
-        form.submit();
-        alert("회원가입이 완료되었습니다!");
-        // 부모(로그인 모달)에게 닫으라고 이벤트 보내기
-        if (window.parent) {
-          window.parent.postMessage({ type: 'signupComplete' }, '*');
-        }
     }
   });
 });
