@@ -1,0 +1,321 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>회원가입</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: "Pretendard", sans-serif;
+  }
+  input {
+    font-size: 18px;
+    font-family: "Pretendard", sans-serif;
+    color: #56609B;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    outline: none;
+    width: 560px;
+  }
+  button {
+    cursor: pointer;
+  }
+  .feedback.error { color: red; font-size: 14px; margin-top: 4px; }
+  .feedback.success { color: green; font-size: 14px; margin-top: 4px; }
+
+  /* ✅ 전체 비율 축소 추가 */
+  .scale-wrapper {
+    transform: scale(0.7);       /* 비율 (0.7 → 더 작게 하려면 0.6, 더 크게 하려면 0.8) */
+    transform-origin: center; /* 위쪽 중앙 기준으로 축소 */
+  }
+</style>
+</head>
+<body>
+
+<!-- ✅ 추가: 전체를 감쌀 래퍼 -->
+<div class="scale-wrapper">
+
+<form method="post" action="{% url 'uauth:signup' %}" enctype="multipart/form-data">
+{% csrf_token %}
+<div style="width: 756px; height: 868px; position: relative; border-radius: 30px">
+  <!-- 바탕 -->
+  <div style="width: 756px; height: 868px; left: 0px; top: 0px; position: absolute; background: white; border-radius: 30px"></div>
+
+  <!-- 제목 -->
+  <div style="width: 629px; height: 103px; left: 63px; top: 32px; position: absolute; display: flex; align-items: center; color: #56609B; font-size: 48px; font-weight: 600;">회원가입</div>
+
+  <!-- 이메일 입력 -->
+  <div style="width: 393px; height: 40px; left: 78px; top: 165px; position: absolute; color: #56609B; font-size: 24px; font-weight: 600;">이메일 입력</div>
+  <div style="width: 613px; height: 75px; left: 63px; top: 213px; position: absolute; border-radius: 30px; border: 1.5px #56609B solid;"></div>
+  <input type="email" name="email" id="email"
+         placeholder="이메일을 입력해 주세요."
+         value="{{ form.email.value|default:'' }}"
+         style="position: absolute; left: 75px; top: 228px; z-index: 10;">
+  <sub id="email-feedback" class="feedback" style="position:absolute; left:94px; top:290px;"></sub>
+
+  <!-- 인증번호 전송 -->
+  <!-- <div style="width: 613px; height: 75px; left: 63px; top: 304px; position: absolute; background: #56609B; border-radius: 30px;"></div> -->
+  
+  <div id="verification-container" 
+      style="position:absolute; width: 613px; height: 75px; left: 63px; top: 304px; position: absolute;">
+    <button type="button" id="send-code-btn"
+            style="width: 100%; height: 100%; background: #56609B; border: none; border-radius: 30px; color: white; font-size: 24px; font-weight: 500;">
+      인증번호 전송하기
+    </button>
+  </div>
+
+  <!-- 비밀번호 -->
+  <div style="width: 393px; height: 40px; left: 78px; top: 417px; position: absolute; color: #56609B; font-size: 24px; font-weight: 600;">비밀번호 설정</div>
+  <div style="width: 613px; height: 75px; left: 63px; top: 465px; position: absolute; border-radius: 30px; border: 1.5px #56609B solid;"></div>
+  <input type="password" name="password1" id="password1"
+         placeholder="비밀번호를 입력해 주세요."
+         value="{{ form.password1.value|default:'' }}"
+         style="position: absolute; left: 75px; top: 480px; z-index: 10;">
+
+  <!-- 비밀번호 확인 -->
+  <div style="width: 613px; height: 75px; left: 63px; top: 560px; position: absolute; border-radius: 30px; border: 1.5px #56609B solid;"></div>
+  <input type="password" name="password2" id="password2"
+         placeholder="비밀번호 확인"
+         value="{{ form.password2.value|default:'' }}"
+         style="position: absolute; left: 75px; top: 575px; z-index: 10;">
+  <div id="password-feedback" class="feedback" style="position:absolute; left:90px; top:650px;">
+    영문 대/소문자, 숫자, 특수문자(!?~@#$%&^) 두 종류 이상 혼용되어야 함.<br>
+    8~16자 사이, 연속된 숫자 혹은 동일 숫자의 반복은 설정 불가함.
+  </div>
+
+  <!-- 가입하기 버튼 -->
+  <div style="width: 328px; height: 65px; left: 340px; top: 743px; position: absolute; background: #56609B; border-radius: 30px;"></div>
+  <button type="submit"
+          style="position: absolute; left: 417px; top: 754px; width: 174px; height: 44px; background:none; color:white; font-size:26px; font-weight:600; border:none; z-index:10;">
+    가입
+  </button>
+
+  <!-- 안내 -->
+  <div style="width: 246px; height: 44px; left: 78px; top: 754px; position: absolute; display: flex; align-items: center; color: #56609B; font-size: 22px; font-weight: 400;">계정이 있으신가요?</div>
+</div>
+</form>
+
+</div> <!-- ✅ scale-wrapper 닫기 -->
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const pw1 = document.getElementById('password1');
+  const pw2 = document.getElementById('password2');
+  const feedback = document.getElementById('password-feedback');
+  const sendBtn = document.getElementById('send-code-btn');
+  const emailInput = document.getElementById('email');
+  const form = document.querySelector('form');
+
+  function validatePassword(pw) {
+    const errors = [];
+    if (pw.length < 8 || pw.length > 16) {
+      errors.push("8~16자 사이여야 합니다.");
+    }
+    const hasUpper = /[A-Z]/.test(pw);
+    const hasLower = /[a-z]/.test(pw);
+    const hasNumber = /[0-9]/.test(pw);
+    const hasSpecial = /[!?~@#$%&^]/.test(pw);
+    const types = [hasUpper, hasLower, hasNumber, hasSpecial].filter(v => v).length;
+    if (types < 2) {
+      errors.push("영문, 숫자, 특수문자 중 2가지 이상 혼용해야 합니다.");
+    }
+    if (/(012|123|234|345|456|567|678|789|890|111|222|333|444|555|666|777|888|999)/.test(pw)) {
+      errors.push("연속된 숫자 혹은 동일 숫자 반복은 불가합니다.");
+    }
+    return errors;
+  }
+
+  function updateFeedback() {
+    const pw = pw1.value;
+    const pwCheck = pw2.value;
+    const errors = validatePassword(pw);
+
+    if (errors.length > 0) {
+      feedback.classList.remove('success');
+      feedback.classList.add('error');
+      feedback.innerHTML = errors.join('<br>');
+    } else if (pw && pwCheck && pw !== pwCheck) {
+      feedback.classList.remove('success');
+      feedback.classList.add('error');
+      feedback.innerHTML = "비밀번호가 일치하지 않습니다.";
+    } else if (pw && pw === pwCheck) {
+      feedback.classList.remove('error');
+      feedback.classList.add('success');
+      feedback.innerHTML = "사용 가능한 비밀번호입니다.";
+    } else {
+      feedback.innerHTML = "";
+    }
+  }
+
+  pw1.addEventListener('input', updateFeedback);
+  pw2.addEventListener('input', updateFeedback);
+
+  sendBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      if (!email) {
+        alert("이메일을 입력해주세요.");
+        return;
+      }
+
+      try {
+        const response = await fetch("{% url 'uauth:send_code' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const data = await response.json();
+
+        // 서버 메시지를 그대로 보여주기
+        if (!response.ok) {
+          alert(data.message || data.msg || "서버 오류가 발생했습니다.");
+          return;
+        }
+
+        alert(data.message || data.msg || "인증 코드가 전송되었습니다.");
+
+        // 인증번호 입력창 + 확인 버튼 생성
+        const container = document.getElementById("verification-container");
+        container.innerHTML = ""; // 기존 내용 초기화
+
+        // 인증번호 입력창
+        const codeInput = document.createElement("input");
+        codeInput.type = "text";
+        codeInput.placeholder = "인증번호 입력";
+        codeInput.id = "verification-code";
+        codeInput.style.textIndent = "20px";
+        codeInput.style.width = "367px";
+        codeInput.style.height = "75px";
+        codeInput.style.fontSize = "18px";
+        codeInput.style.marginRight = "10px";
+        codeInput.style.padding = "0 10px";
+        codeInput.style.borderRadius = "30px";
+        codeInput.style.border = "1.5px #56609B solid";
+
+        // 인증번호 확인 버튼
+        const verifyBtn = document.createElement("button");
+        verifyBtn.type = "button";
+        verifyBtn.innerText = "인증번호 확인";
+        verifyBtn.style.width = "229px";
+        verifyBtn.style.height = "75px";
+        verifyBtn.style.background = "#56609B";
+        verifyBtn.style.color = "white";
+        verifyBtn.style.fontSize = "18px";
+        verifyBtn.style.border = "none";
+        verifyBtn.style.borderRadius = "30px";
+        verifyBtn.style.cursor = "pointer";
+
+        // 타이머 표시
+        const timerDisplay = document.createElement("div");
+        timerDisplay.style.color = "red";
+        timerDisplay.style.fontSize = "16px";
+        timerDisplay.style.marginTop = "5px";
+        timerDisplay.style.marginLeft = "470px";
+
+        container.appendChild(codeInput);
+        container.appendChild(verifyBtn);
+        container.appendChild(timerDisplay);
+
+        let timeLeft = 3 * 60; // 3분 = 180초
+
+        const timerInterval = setInterval(() => {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                codeInput.disabled = true;
+                verifyBtn.disabled = true;
+                timerDisplay.textContent = "시간 초과";
+            }
+            timeLeft--;
+        }, 1000);
+
+        // 클릭 시 서버로 인증번호 검증
+        verifyBtn.addEventListener('click', async () => {
+          const code = codeInput.value.trim();
+          if (!code) {
+            alert("인증번호를 입력해주세요.");
+            return;
+          }
+
+          try {
+            const resp = await fetch("{% url 'uauth:verify_code' %}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+              },
+              body: JSON.stringify({ email, code }),
+            });
+
+            const result = await resp.json();
+
+            if (!resp.ok) {
+              alert(result.message || result.msg || "인증 중 오류가 발생했습니다.");
+              return;
+            }
+
+            alert(result.message || result.msg || "인증 성공");
+
+            if (result.message == "인증이 완료되었습니다.") {  // 서버에서 성공 여부를 JSON으로 넘긴다고 가정
+              container.innerHTML = "";
+
+              const completeBtn = document.createElement("button");
+              completeBtn.type = "button";
+              completeBtn.innerText = "이메일 인증 완료";
+              completeBtn.disabled = true;  // 클릭 불가
+              completeBtn.style.width = "613px";
+              completeBtn.style.height = "75px";
+              completeBtn.style.background = "#56609B"; // 초록색
+              completeBtn.style.color = "white";
+              completeBtn.style.fontSize = "24px";
+              completeBtn.style.fontWeight = "500";
+              completeBtn.style.border = "none";
+              completeBtn.style.borderRadius = "30px";
+              completeBtn.style.cursor = "default";
+
+              container.appendChild(completeBtn);
+            }
+
+          } catch (err) {
+            alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+            console.error(err);
+          }
+        });
+
+      } catch (err) {
+        alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+        console.error(err);
+      }
+  });
+
+  form.addEventListener('submit', (e) => {
+    const errors = validatePassword(pw1.value);
+    if (errors.length > 0 || pw1.value !== pw2.value) {
+      e.preventDefault();
+      alert("비밀번호 조건을 확인하세요.");
+    } else {
+        e.preventDefault();
+        form.submit();
+        alert("회원가입이 완료되었습니다!");
+        // 부모(로그인 모달)에게 닫으라고 이벤트 보내기
+        if (window.parent) {
+          window.parent.postMessage({ type: 'signupComplete' }, '*');
+        }
+    }
+  });
+});
+</script>
+</body>
+</html>
