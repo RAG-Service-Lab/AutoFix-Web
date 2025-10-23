@@ -1,0 +1,57 @@
+<div style="
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: #EFF4FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+">
+  <!-- 하얀 박스 (16:9 비율 유지, 내부 스케일 조정됨) -->
+    <div id="white-box" style="
+    position: relative;
+    width: 40vw;
+    aspect-ratio: 16/9;
+    background: white;
+    border-radius: 30px;
+    overflow: hidden;
+    transform-origin: center center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    ">
+    <!-- 내부 내용: 비율 고정 캔버스 -->
+    <div style="
+    position: absolute;
+    inset: 0;
+    width: 1920px;
+    height: 1080px;
+    transform-origin: top left;
+    scale: var(--scale, 1);
+    ">
+      <!-- 기존 요소들을 그대로 유지 -->
+      <div style="width: 100px; height: 122px; left: 116px; top: 70px; position: absolute; text-align: center; color: #AEC3EF; font-size: 75px; font-family: Pretendard; font-weight: 900;">&lt;</div>
+      <div style="width: 629px; height: 103px; left: 645px; top: 142px; position: absolute; display: flex; align-items: center; justify-content: center; color: #56609B; font-size: 48px; font-family: Pretendard; font-weight: 600;">회원 탈퇴</div>
+      <div style="width: 613px; height: 75px; left: 645px; top: 323px; position: absolute; border-radius: 30px; border: 1.5px solid #56609B;"></div>
+      <div style="width: 472px; height: 69px; left: 676px; top: 326px; position: absolute; display: flex; align-items: center; color: #56609B; font-size: 24px; font-family: Pretendard; font-weight: 500;">비밀번호를 입력해 주세요.</div>
+      <div style="width: 472px; height: 69px; left: 676px; top: 417px; position: absolute; display: flex; align-items: center; color: #56609B; font-size: 24px; font-family: Pretendard; font-weight: 500;">비밀번호 확인</div>
+      <div style="width: 613px; height: 75px; left: 645px; top: 414px; position: absolute; border-radius: 30px; border: 1.5px solid #56609B;"></div>
+      <div style="width: 598px; height: 52px; left: 659px; top: 492px; position: absolute; text-align: center; color: #FF0000; font-size: 16px; font-family: Pretendard; font-weight: 500;">비밀번호가 일치하지 않습니다.</div>
+      <div style="width: 328px; height: 65px; left: 922px; top: 853px; position: absolute; background: #FF0000; border-radius: 30px;"></div>
+      <div style="width: 174px; height: 44px; left: 999px; top: 864px; position: absolute; display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; font-family: Pretendard; font-weight: 600;">탈퇴</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ✅ 창 크기에 따라 내부 컨텐츠 자동 스케일 조정
+  function resizeWhiteBox() {
+    const box = document.getElementById("white-box");
+    const inner = box.querySelector("div");
+    const boxWidth = box.clientWidth;
+    const boxHeight = box.clientHeight;
+    const scale = Math.min(boxWidth / 1920, boxHeight / 1080);
+    inner.style.setProperty("--scale", scale);
+  }
+
+  window.addEventListener("resize", resizeWhiteBox);
+  resizeWhiteBox();
+</script>
