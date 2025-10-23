@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>차량 선택</title>
+  <link rel="stylesheet" href="{% static 'css/chat/style.css' %}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    /* 최소한의 토글 레이아웃 (원하는 곳에 합쳐도 됩니다) */
+    .toggle-wrap{ margin:40px 0 0 360px; }
+    .toggle-row{ display:flex; gap:36px; align-items:flex-start; margin-top:12px; }
+    .toggle-col{ width:360px; }
+    .toggle-label{ font-weight:600; color:#666; margin-bottom:10px; }
+    .select{
+      width:100%; height:48px; border:2px solid #56579e; border-radius:12px;
+      padding:0 14px; font-size:16px; outline:none; background:#fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="div-wrapper">
+      <!-- ✅ 왼쪽 사이드바 -->
+      <aside class="sidebar" role="complementary">
+        <nav class="sidebar-nav" role="navigation" aria-label="메인 네비게이션">
+          <div class="logo-container">
+            <img
+              class="auto-fix-logo"
+              src="{% static 'images/chat/auto_fix_logo_chat.png' %}"
+              alt="Auto FIX 로고"
+            />
+          </div>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="#new-chat" id="newChatBtn" class="nav-link text-wrapper-2">새 채팅 시작하기</a>
+            </li>
+            <li class="nav-item">
+              <a href="#main" class="nav-link text-wrapper-3">메인 화면으로 돌아가기</a>
+            </li>
+          </ul>
+          <section class="chat-history-section">
+            <h2 class="text-wrapper-4">채팅 히스토리</h2>
+          </section>
+        </nav>
+        <div class="sidebar-footer">
+          <a href="#profile" class="footer-link text-wrapper-6">회원 정보 수정</a>
+          <a href="#logout" class="footer-link text-wrapper-5">로그아웃</a>
+        </div>
+      </aside>
+
+  <h1 style="margin: 40px 0 0 360px; color:#55609a;">Auto FIX</h1>
+      <main class="main-content" role="main">
+
+        <header class="page-header">
+          <h1 class="page-title">Auto FIX</h1>
+        </header>
+
+        <section class = 'vehicle-center'>
+            <div class="toggle-wrap">
+              <div class="toggle-row">
+                <div class="toggle-col">
+                  <div class="toggle-label">차량 제조사를 선택해 주세요.</div>
+                  <select id="maker" class="select">
+                    <option value="">제조사 선택하기</option>
+                    {% for m in makers %}
+                      <option value="{{ m }}">{{ m }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+            
+                <div class="toggle-col">
+                  <div class="toggle-label">차량 모델을 선택해 주세요.</div>
+                  <select id="model" class="select" disabled>
+                    <option value="">모델 선택하기</option>
+                  </select>
+                </div>
+            
+                <div class="toggle-col">
+                  <div class="toggle-label">엔진을 선택해 주세요.</div>
+                  <select id="engine" class="select" disabled>
+                    <option value="">엔진 선택하기</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+        </section>
+
+  <form id="go-chat-form" method="post" action="{% url 'chat:set_vehicle' %}" style="display:none;">
+    {% csrf_token %}
+    <input type="hidden" name="maker" id="h_maker">
+    <input type="hidden" name="model" id="h_model">
+    <input type="hidden" name="engine" id="h_engine">
+  </form>
+
+  <script>
+    function fillSelect($sel, items, placeholder){
+      $sel.empty().append(`<option value="">${placeholder}</option>`);
+      items.forEach(v => $sel.append(`<option value="${v}">${v}</option>`));
+    }
+
+    $(function(){
+      // 제조사 변경 → 모델 목록 로드
+      $("#maker").on("change", function(){
+        const maker = $(this).val();
+        fillSelect($("#model"), [], "모델 선택하기");
+        fillSelect($("#engine"), [], "엔진 선택하기");
+        $("#model").prop("disabled", !maker);
+        $("#engine").prop("disabled", true);
+
+        if (!maker) return;
+        $.get("{% url 'chat:vehicle_options' %}", { maker }, function(res){
+          if (res.type === "models"){
+            fillSelect($("#model"), res.data, "모델 선택하기");
+          }
+        });
+      });
+
+      // 모델 변경 → 엔진 목록 로드
+      $("#model").on("change", function(){
+        const maker = $("#maker").val();
+        const model = $(this).val();
+        fillSelect($("#engine"), [], "엔진 선택하기");
+        $("#engine").prop("disabled", !model);
+
+        if (!(maker && model)) return;
+        $.get("{% url 'chat:vehicle_options' %}", { maker, model }, function(res){
+          if (res.type === "engines"){
+            fillSelect($("#engine"), res.data, "엔진 선택하기");
+          }
+        });
+      });
+
+      // 엔진 변경 → 세션 저장 + 채팅 페이지로 이동
+      $("#engine").on("change", function(){
+        const maker  = $("#maker").val();
+        const model  = $("#model").val();
+        const engine = $(this).val();
+        if (!(maker && model && engine)) return;
+
+        // hidden form 값 넣어서 POST
+        $("#h_maker").val(maker);
+        $("#h_model").val(model);
+        $("#h_engine").val(engine);
+
+        $.post("{% url 'chat:set_vehicle' %}", $("#go-chat-form").serialize())
+          .done(function(r){
+            if (r.ok && r.chat_url){
+              window.location.href = r.chat_url; // ✅ 채팅 페이지로 이동
+            }else{
+              alert("저장 실패");
+            }
+          })
+          .fail(function(){
+            alert("오류가 발생했습니다.");
+          });
+      });
+    });
+  </script>
+</body>
+</html>
