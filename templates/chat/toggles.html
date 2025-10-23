@@ -141,7 +141,7 @@
     deleteBtn.addEventListener('click', function(e) {
       e.preventDefault();
       if (confirm("정말로 회원 탈퇴를 진행하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
-        window.location.href = "{% url 'chat:signout' %}";
+        window.location.href = "{% url 'uauth:signout' %}";
       }
     });
 
