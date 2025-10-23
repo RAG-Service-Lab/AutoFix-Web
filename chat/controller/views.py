@@ -44,6 +44,10 @@ def index(request):
 def toggle(request):
     return index(request)
 
+def signout(request):
+
+    return render(request, 'uauth/signout.html')
+
 # 옵션 조회 API
 @require_GET
 def vehicle_options(request):

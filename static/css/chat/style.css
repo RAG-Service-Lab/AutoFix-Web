@@ -618,6 +618,40 @@
 }
 
 
+.text-wrapper-8 {
+  position: absolute; 
+  top: 850px;
+  left: 56px;
+  height: 31px;
+  font-family: "Pretendard-Medium", Helvetica;
+  font-weight: 500;
+  color: #4d4d4d;
+  font-size: 26px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.text-wrapper-9 {
+  position: absolute; 
+  top: 800px;
+  left: 56px;
+  height: 31px;
+  font-family: "Pretendard-Medium", Helvetica;ㄴ
+  font-weight: 500;
+  color: #4d4d4d;
+  font-size: 26px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
 /* ====== 채팅 박스 영역 ====== */
 #chat-box {
   position: relative;

@@ -6,6 +6,7 @@
   <title>차량 선택</title>
   <link rel="stylesheet" href="{% static 'css/chat/style.css' %}">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   <style>
     /* 최소한의 토글 레이아웃 (원하는 곳에 합쳐도 됩니다) */
     .toggle-wrap{ margin:40px 0 0 360px; }
@@ -15,6 +16,33 @@
     .select{
       width:100%; height:48px; border:2px solid #56579e; border-radius:12px;
       padding:0 14px; font-size:16px; outline:none; background:#fff;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.4);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-body {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      width: 600px;
+      height: 600px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .modal-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
     }
   </style>
 </head>
@@ -43,6 +71,8 @@
           </section>
         </nav>
         <div class="sidebar-footer">
+          <a href="javascript:void(0);" id="deleteAccountBtn" class="footer-link text-wrapper-9">회원 탈퇴</a>
+          <a href="javascript:void(0);" id="openModalBtn2" class="footer-link text-wrapper-8">비밀번호 수정</a>
           <a href="#profile" class="footer-link text-wrapper-6">회원 정보 수정</a>
           <a href="#logout" class="footer-link text-wrapper-5">로그아웃</a>
         </div>
@@ -84,7 +114,15 @@
               </div>
             </div>
         </section>
+    </main>
+  </div>
 
+  <!-- ✅ 모달 영역 -->
+  <div id="modal" class="modal">
+    <div id="modalBody" class="modal-body"></div>
+  </div>
+
+  <!-- ✅ 차량 선택용 form -->
   <form id="go-chat-form" method="post" action="{% url 'chat:set_vehicle' %}" style="display:none;">
     {% csrf_token %}
     <input type="hidden" name="maker" id="h_maker">
@@ -92,7 +130,42 @@
     <input type="hidden" name="engine" id="h_engine">
   </form>
 
+
   <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modalBody');
+    const openBtn2 = document.getElementById('openModalBtn2');
+
+    const deleteBtn = document.getElementById('deleteAccountBtn');
+    deleteBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (confirm("정말로 회원 탈퇴를 진행하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+        window.location.href = "{% url 'chat:signout' %}";
+      }
+    });
+
+    // ✅ 비밀번호 수정 버튼 클릭 시 모달 열기
+    openBtn2.addEventListener('click', async (e) => {
+      e.preventDefault();
+      modal.style.display = 'flex';
+      modalBody.innerHTML = '<p style="text-align:center;">로딩 중...</p>';
+
+      try {
+        const res = await fetch("{% url 'uauth:reset_password' %}");
+        if (!res.ok) throw new Error('파일을 불러올 수 없습니다.');
+        const html = await res.text();
+        modalBody.innerHTML = `<iframe srcdoc="${html.replace(/"/g, '&quot;')}"></iframe>`;
+        } catch (err) {
+            modalBody.innerHTML = `<p style="color:red;">불러오기 실패: ${err.message}</p>`;
+        }
+    });
+  
+    // 모달 바깥 클릭 시 닫기
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+
     function fillSelect($sel, items, placeholder){
       $sel.empty().append(`<option value="">${placeholder}</option>`);
       items.forEach(v => $sel.append(`<option value="${v}">${v}</option>`));
@@ -155,6 +228,7 @@
           });
       });
     });
+  });
   </script>
 </body>
 </html>
