@@ -91,10 +91,16 @@ class UAuthServiceImpl(UAuthService):
 
         return user, []
 
-    def send_verification_email(self, email):
-        # 이메일 중복체크
-        if self.__uauth_repository.get_user_by_email(email):
-            raise ValidationError("이미 가입된 이메일입니다.")
+    def send_verification_email(self, email, signup=True):
+
+        user_exists = self.__uauth_repository.get_user_by_email(email)
+
+        if signup:
+            if user_exists:
+                raise ValidationError("이미 가입된 이메일입니다.")
+        else:
+            if not user_exists:
+                raise ValidationError("등록되지 않은 이메일입니다.")
 
         # 인증코드 생성
         code = get_random_string(length=6)

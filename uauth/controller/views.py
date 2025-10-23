@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect
 from django.contrib import auth, messages
 from uauth.entity.models import UserForm
@@ -24,12 +25,15 @@ class MyLoginView(LoginView):
 class SendVerificationCodeView(APIView):
     def post(self, request):
         email = request.data.get("email")
+        purpose = request.data.get("purpose", "signup")
+
         if not email:
             return Response({"message": "이메일을 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
+        signup = True if purpose == "signup" else False
         service = UAuthServiceImpl.get_instance()
         try:
-            service.send_verification_email(email)
+            service.send_verification_email(email, signup =signup )
             return Response({"message": "인증 코드가 이메일로 전송되었습니다."}, status=status.HTTP_200_OK)
         except ValidationError as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -91,18 +95,20 @@ def signup(request):
 
 def reset_password(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            password1 = data.get('password1')
+            password2 = data.get('password2')
+        except:
+            return JsonResponse({'message': '잘못된 요청입니다.'}, status=400)
 
         user, errors = uauth_service.reset_password(email, password1, password2)
-
         if errors:
-            return render(request, 'uauth/reset_password.html', {'errors': errors, 'email': email})
-
-        messages.success(request, "비밀번호가 성공적으로 변경되었습니다.")
-        return redirect('uauth:login')
-
+            return JsonResponse({'message': errors[0]}, status=400)
+        return JsonResponse({'message': '비밀번호가 성공적으로 변경되었습니다.'})
+    
+    # GET 요청 시
     return render(request, 'uauth/reset_password.html')
 
 

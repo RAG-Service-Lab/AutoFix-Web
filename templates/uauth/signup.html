@@ -174,7 +174,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const data = await response.json();
-        alert(data.message || "서버 응답이 없습니다.");
+
+        // 서버 메시지를 그대로 보여주기
+        if (!response.ok) {
+          alert(data.message || data.msg || "서버 오류가 발생했습니다.");
+          return;
+        }
+
+        alert(data.message || data.msg || "인증 코드가 전송되었습니다.");
 
         // 인증번호 입력창 + 확인 버튼 생성
         const container = document.getElementById("verification-container");
@@ -253,7 +260,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const result = await resp.json();
-            alert(result.message || "서버 응답이 없습니다.");
+
+            if (!resp.ok) {
+              alert(result.message || result.msg || "인증 중 오류가 발생했습니다.");
+              return;
+            }
+
+            alert(result.message || result.msg || "인증 성공");
 
             if (result.message == "인증이 완료되었습니다.") {  // 서버에서 성공 여부를 JSON으로 넘긴다고 가정
               container.innerHTML = "";

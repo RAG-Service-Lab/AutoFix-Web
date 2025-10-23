@@ -288,6 +288,13 @@
             modal.style.display = 'none';
             modalBody.innerHTML = ''; // iframe 내용 제거
         }})
+
+        window.addEventListener('message', (event) => {
+        if (event.data?.type === 'resetComplete') {
+            // 모달 닫기
+            modal.style.display = 'none';
+            modalBody.innerHTML = ''; // iframe 내용 제거
+        }})
     </script>
 
 </body>
