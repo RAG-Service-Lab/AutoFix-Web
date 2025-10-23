@@ -10,7 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
+email_address = os.getenv("EMAIL")
+app_password = os.getenv("APP_PASS")
+db_password = os.getenv("SQL_PASS")
+port = os.getenv("PORT")
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -80,9 +90,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'autofixdb',
         'USER': 'autofix',
-        'PASSWORD': 'autofix',
+        'PASSWORD': db_password,
         'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'PORT': port,
         'OPTIONS': {
             'charset': 'utf8mb4'
         }
@@ -138,11 +148,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # 로그인 성공 후 리다이렉트 페이지 지정
 LOGIN_REDIRECT_URL = '/chat/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "wheneverchoice@gmail.com"  # 또는 직접 문자열로 "example@gmail.com"
-EMAIL_HOST_PASSWORD = "oawx ejxx rnvu havp"  # 앱 비밀번호
+EMAIL_HOST_USER = email_address  # 또는 직접 문자열로 "example@gmail.com"
+EMAIL_HOST_PASSWORD = app_password  # 앱 비밀번호
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
