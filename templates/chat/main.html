@@ -1,0 +1,80 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto FIX</title>
+  <link rel="stylesheet" href="{% static 'css/chat/style.css' %}">
+</head>
+<body>
+  <div class="container">
+    <!-- 왼쪽 사이드 메뉴 -->
+    <aside class="sidebar">
+      <div class="logo">
+        <h2>Auto FIX</h2>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#">새 채팅 시작하기</a></li>
+          <li><a href="#">메인 화면으로 돌아가기</a></li>
+          <li class="divider"></li>
+          <li><a href="#">채팅 히스토리</a></li>
+        </ul>
+      </nav>
+      <div class="bottom-menu">
+        <a href="#">회원 정보 수정</a>
+        <a href="#">로그아웃</a>
+      </div>
+    </aside>
+
+    <!-- 메인 채팅 영역 -->
+    <main class="chat-area">
+      <header>
+        <h2>Auto FIX</h2>
+        <p>차량 정보: 현대 &gt; G70 &gt; G 2.5 T-GDI</p>
+      </header>
+
+      <div id="chat-box" class="chat-box">
+        <!-- 채팅 메시지들이 여기에 표시됨 -->
+      </div>
+
+      <!-- 입력창 -->
+      <form id="chat-form" method="POST">
+        {% csrf_token %}
+        <input type="text" id="message" name="message" placeholder="차량의 증상이나 문제를 입력하세요.">
+        <button type="submit">🔍</button>
+      </form>
+    </main>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $("#chat-form").on("submit", function(e) {
+      e.preventDefault();
+      const message = $("#message").val();
+      if (!message) return;
+
+      $("#chat-box").append(`<div class='user-msg'>${message}</div>`);
+      $("#message").val("");
+
+      $.ajax({
+        type: "POST",
+        url: "{% url 'chat:chat_response' %}",
+        data: {
+          message: message,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function(data) {
+          $("#chat-box").append(`<div class='bot-msg'>${data.response}</div>`);
+          $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+        },
+        error: function() {
+          $("#chat-box").append("<div class='bot-msg error'>에러가 발생했습니다.</div>");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

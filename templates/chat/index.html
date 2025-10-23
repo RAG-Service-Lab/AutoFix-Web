@@ -1,0 +1,162 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Auto FIX - 차량 진단 서비스</title>
+
+    <!-- CSS 연결 -->
+    <link rel="stylesheet" href="{% static 'css/chat/globals.css' %}">
+    <link rel="stylesheet" href="{% static 'css/chat/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/chat/styleguide.css' %}">
+  </head>
+
+  <body>
+    <div class="div-wrapper">
+      <!-- ✅ 왼쪽 사이드바 -->
+      <aside class="sidebar" role="complementary">
+        <nav class="sidebar-nav" role="navigation" aria-label="메인 네비게이션">
+          <div class="logo-container">
+            <img
+              class="auto-fix-logo"
+              src="{% static 'images/chat/auto_fix_logo_chat.png' %}"
+              alt="Auto FIX 로고"
+            />
+          </div>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="#new-chat" id="newChatBtn" class="nav-link text-wrapper-2">새 채팅 시작하기</a>
+            </li>
+            <li class="nav-item">
+              <a href="#main" class="nav-link text-wrapper-3">메인 화면으로 돌아가기</a>
+            </li>
+          </ul>
+          <section class="chat-history-section">
+            <h2 class="text-wrapper-4">채팅 히스토리</h2>
+          </section>
+        </nav>
+        <div class="sidebar-footer">
+          <a href="#profile" class="footer-link text-wrapper-6">회원 정보 수정</a>
+          <a href="#logout" class="footer-link text-wrapper-5">로그아웃</a>
+        </div>
+      </aside>
+
+      <!-- ✅ 메인 콘텐츠 -->
+      <main class="main-content" role="main">
+        <header class="page-header">
+          <h1 class="page-title">Auto FIX</h1>
+          <div class="vehicle-info">
+            <span class="text-wrapper-7">차량 정보</span>
+            <p class="g-t-GDI">현대 &gt; G70 &gt; G 2.5 T-GDI</p>
+          </div>
+        </header>
+
+        <!-- ✅ 채팅 대화창 -->
+        <section id="chat-box" class="chat-box"></section>
+
+        <!-- ✅ 채팅 입력창 -->
+        <div class="chat-input-container">
+          <form id="chat-form" method="POST" action="{% url 'chat:chat_response' %}">
+            {% csrf_token %}
+            <input
+              type="text"
+              id="chat-input"
+              name="message"
+              class="chat-textarea"
+              placeholder="차량의 증상이나 문제를 입력하세요."
+              autocomplete="off"
+              required
+            />
+            <button type="submit" class="chat-submit-btn" aria-label="전송">
+              <img src="{% static 'images/chat/union.png' %}" alt="" />
+            </button>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <!-- 새 채팅 불러오기 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const newChatBtn = document.getElementById("newChatBtn");
+          if (newChatBtn) {
+            newChatBtn.addEventListener("click", function (e) {
+              e.preventDefault();      // 링크 이동 막기
+              window.location.reload(); // 같은 창에서 새로고침
+            });
+          }
+        });
+    </script>
+
+
+    <!-- ✅ jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- ✅ 채팅 AJAX 스크립트 -->
+    <script>
+      $(function () {
+        $("#chat-form").on("submit", function (e) {
+          e.preventDefault();
+          const message = $("#chat-input").val().trim();
+          if (!message) return;
+
+          // 사용자 메시지 표시
+          $("#chat-box").append(
+            `<div class="chat-message user"><p>${message}</p></div>`
+          );
+          $("#chat-input").val("");
+
+          // 자동 스크롤 
+          $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+
+
+          // 서버 요청
+          $.ajax({
+            url: "{% url 'chat:chat_response' %}",
+            type: "POST",
+            data: {
+              message: message,
+              csrfmiddlewaretoken: "{{ csrf_token }}",
+            },
+            success: function (response) {
+              $("#chat-box").append(
+                `<div class="chat-message bot"><p>${response.response}</p></div>`
+              );
+              $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+            },
+            error: function () {
+              $("#chat-box").append(
+                `<div class="chat-message bot error"><p>⚠️ 서버 응답 오류가 발생했습니다.</p></div>`
+              );
+            },
+          });
+        });
+      });
+
+      // textarea 자동 높이 조절
+      function autosize(el){
+        el.style.height = 'auto';
+        const max = 160; // CSS max-height와 동일
+        el.style.height = Math.min(el.scrollHeight, max) + 'px';
+      }
+    
+      document.addEventListener('DOMContentLoaded', () => {
+        const ta = document.getElementById('chat-input');
+        if (ta){
+          autosize(ta);
+          ta.addEventListener('input', () => autosize(ta));
+        
+          // Enter = 전송, Shift+Enter = 줄바꿈
+          ta.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey){
+              e.preventDefault();
+              document.getElementById('chat-form').dispatchEvent(new Event('submit', {cancelable:true}));
+            }
+          });
+        }
+      });  
+    </script>
+  </body>
+</html>

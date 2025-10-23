@@ -1,0 +1,32 @@
+:root {
+  --www-figma-com-semantic-button-font-family: "SansSerif", Helvetica;
+  --www-figma-com-semantic-button-font-weight: 400;
+  --www-figma-com-semantic-button-font-size: 17.700000762939453px;
+  --www-figma-com-semantic-button-letter-spacing: -0.09000000357627869px;
+  --www-figma-com-semantic-button-line-height: 25.200000762939453px;
+  --www-figma-com-semantic-button-font-style: normal;
+  --www-figma-com-semantic-heading-1-font-family: "SansSerif", Helvetica;
+  --www-figma-com-semantic-heading-1-font-weight: 400;
+  --www-figma-com-semantic-heading-1-font-size: 26px;
+  --www-figma-com-semantic-heading-1-letter-spacing: -0.3199999928474426px;
+  --www-figma-com-semantic-heading-1-line-height: 33.79999923706055px;
+  --www-figma-com-semantic-heading-1-font-style: normal;
+  --www-figma-com-semantic-input-font-family: "SansSerif", Helvetica;
+  --www-figma-com-semantic-input-font-weight: 400;
+  --www-figma-com-semantic-input-font-size: 18px;
+  --www-figma-com-semantic-input-letter-spacing: -0.09000000357627869px;
+  --www-figma-com-semantic-input-line-height: normal;
+  --www-figma-com-semantic-input-font-style: normal;
+  --www-figma-com-semantic-label-upper-font-family: "Inter", Helvetica;
+  --www-figma-com-semantic-label-upper-font-weight: 400;
+  --www-figma-com-semantic-label-upper-font-size: 11px;
+  --www-figma-com-semantic-label-upper-letter-spacing: 0.550000011920929px;
+  --www-figma-com-semantic-label-upper-line-height: 13.75px;
+  --www-figma-com-semantic-label-upper-font-style: normal;
+  --www-figma-com-sansserif-regular-font-family: "SansSerif", Helvetica;
+  --www-figma-com-sansserif-regular-font-weight: 400;
+  --www-figma-com-sansserif-regular-font-size: 13px;
+  --www-figma-com-sansserif-regular-letter-spacing: 0.14000000059604645px;
+  --www-figma-com-sansserif-regular-line-height: 56px;
+  --www-figma-com-sansserif-regular-font-style: normal;
+}
