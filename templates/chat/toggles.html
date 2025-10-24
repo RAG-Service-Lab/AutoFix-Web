@@ -83,24 +83,23 @@
           <h1 class="page-title">Auto FIX</h1>
         </header>
       
-        <section class='vehicle-center'>
+        <section class = 'vehicle-center'>
           <div class="toggle-row">
             <div class="toggle-col">
               <div class="toggle-label">차량 제조사를 선택해 주세요.</div>
-              <select id="maker" class="select">
-                <option value="">제조사 선택하기</option>
-                {% for m in makers %}
-                  <option value="{{ m }}">{{ m }}</option>
-                {% endfor %}
-              </select>
+                <select id="maker" class="select">
+                  <option value="">제조사 선택하기</option>
+                    {% for m in makers %}
+                      <option value="{{ m }}">{{ m }}</option>
+                    {% endfor %}
+                </select>
             </div>
           
             <div class="toggle-col">
               <div class="toggle-label">차량 모델을 선택해 주세요.</div>
-
-              <select id="model" class="select" disabled>
-                <option value="">모델 선택하기</option>
-              </select>
+                <select id="model" class="select" disabled>
+                  <option value="">모델 선택하기</option>
+                </select>
             </div>
           
             <div class="toggle-col">

@@ -18,7 +18,8 @@ load_dotenv()
 
 email_address = os.getenv("EMAIL")
 app_password = os.getenv("APP_PASS")
-db_password = os.getenv("SQL_PASS")
+db_password1 = os.getenv("SQL_PASS1")
+db_password2 = os.getenv("SQL_PASS2")
 port = os.getenv("PORT")
 
 
@@ -90,13 +91,24 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'autofixdb',
         'USER': 'autofix',
-        'PASSWORD': db_password,
+        'PASSWORD': db_password1,
         'HOST': '127.0.0.1',
         'PORT': port,
         'OPTIONS': {
             'charset': 'utf8mb4'
-        }
-    }
+        }, 
+    }, 
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'car_db',
+        'USER': 'sknTeam6',
+        'PASSWORD': db_password2,
+        'HOST': '127.0.0.1',
+        'PORT': port,
+        'OPTIONS': {
+            'charset': 'utf8mb4'
+        }, 
+    }, 
 }
 
 # Password validation
@@ -124,9 +136,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
