@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from uauth.entity.models import UserForm
 from rest_framework.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required
 
 uauth_service = UAuthServiceImpl.get_instance()
 
@@ -20,7 +21,6 @@ class MyLoginView(LoginView):
     def form_invalid(self, form):
         print("로그인 실패:", form.errors)  # 터미널에 오류 출력
         return super().form_invalid(form)
-
 
 class SendVerificationCodeView(APIView):
     def post(self, request):
@@ -38,7 +38,6 @@ class SendVerificationCodeView(APIView):
         except ValidationError as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
 class VerifyCodeView(APIView):
     def post(self, request):
         email = request.data.get("email")
@@ -50,7 +49,6 @@ class VerifyCodeView(APIView):
             return Response({"message": "인증이 완료되었습니다."}, status=status.HTTP_200_OK)
         except ValidationError as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UserRegisterView(APIView):
     def post(self, request):
@@ -69,6 +67,30 @@ class UserRegisterView(APIView):
         # 회원 생성
         user = service.create(form)
         return Response({"message": "회원가입이 완료되었습니다."}, status=status.HTTP_201_CREATED)
+
+class DeleteAccountView(APIView):
+    """
+    회원탈퇴 API
+    POST로 { password } 보내면 현재 로그인된 사용자의 이메일 기반 탈퇴
+    """
+    def post(self, request):
+        email = request.user.email if request.user.is_authenticated else None
+        password = request.data.get("password")
+
+        if not email:
+            return Response({"message": "로그인이 필요합니다."}, status=status.HTTP_401_UNAUTHORIZED)
+        if not password:
+            return Response({"message": "비밀번호를 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+
+        service = UAuthServiceImpl.get_instance()
+        try:
+            service.delete_account(email, password)
+            # 로그아웃 처리
+            from django.contrib import auth
+            auth.logout(request)
+            return Response({"message": "회원탈퇴가 완료되었습니다."}, status=status.HTTP_200_OK)
+        except ValidationError as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def logout(request):
@@ -92,6 +114,10 @@ def signup(request):
         form = UserForm()
 
     return render(request, 'uauth/signup.html', {'form':form})
+
+def signout(request):
+
+    return render(request, 'uauth/signout.html')
 
 def reset_password(request):
     if request.method == 'POST':

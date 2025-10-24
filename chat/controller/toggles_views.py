@@ -1,5 +1,6 @@
 # chat/toggles_views.py
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.urls import reverse
 from django.db import connection
@@ -18,15 +19,7 @@ VEHICLE_TREE = {
     },
 }
 
-
-# def toggles_page(request):
-#     picked = request.session.get("vehicle", {"maker": "", "model": "", "engine": ""})
-#     vehicle_summary = ""
-#     if all(picked.get(k) for k in ("maker","model","engine")):
-#         vehicle_summary = f'{picked["maker"]} > {picked["model"]} > {picked["engine"]}'
-#     context = { "makers": ["현대", "기아"], "picked": picked, "vehicle_summary": vehicle_summary}
-#     return render(request, "chat/toggles.html", context)
-
+@login_required(login_url='uauth:login')
 def toggles_page(request):
     """
     첫 화면: 제조사 리스트만 내려줌 (SELECT DISTINCT vehicle)

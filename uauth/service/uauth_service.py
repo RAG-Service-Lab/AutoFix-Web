@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from uauth.repository.uauth_repository import UAuthRepositoryImpl
 from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
+from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
 from django.utils.crypto import get_random_string
@@ -127,4 +128,25 @@ class UAuthServiceImpl(UAuthService):
 
         # 성공 시 코드 삭제
         self.__uauth_repository.delete_verification_code(email)
+        return True
+
+    def delete_account(self, email, password):
+        """
+        이메일 + 비밀번호 확인 후 사용자 계정 삭제
+        """
+        # 1️⃣ 사용자 존재 여부
+        user = self.__uauth_repository.get_user_by_email(email)
+        if not user:
+            raise ValidationError("존재하지 않는 사용자입니다.")
+
+        # 2️⃣ 비밀번호 확인
+        if not user.check_password(password):
+            raise ValidationError("비밀번호가 일치하지 않습니다.")
+
+        # 3️⃣ 탈퇴 처리 (DB 트랜잭션)
+        with transaction.atomic():
+            user.delete()
+            # 필요시 UserDetail도 CASCADE로 삭제되거나 직접 삭제 가능
+            # UserDetail.objects.filter(user=user).delete()
+
         return True

@@ -1,10 +1,13 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_GET, require_POST
 
 # 메인 화면
 def main(request):
-    return render(request, 'main/main.html')
+    return render(request, 'main/main.html', {
+        'user': request.user  # main.html에서 사용자 정보 접근 가능
+    })
 
 def index(request):
     return render(request, 'chat/index.html')
@@ -42,10 +45,6 @@ def index(request):
 # (선택) 과거 경로 유지용 별칭
 def toggle(request):
     return index(request)
-
-def signout(request):
-
-    return render(request, 'uauth/signout.html')
 
 # 옵션 조회 API
 @require_GET
