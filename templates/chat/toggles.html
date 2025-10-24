@@ -60,10 +60,10 @@
           </div>
           <ul class="nav-list">
             <li class="nav-item">
-              <a href="#new-chat" id="newChatBtn" class="nav-link text-wrapper-2">새 채팅 시작하기</a>
+              <a href="{% url 'chat:toggles_page' %}" id="newChatBtn" class="nav-link text-wrapper-2">새 채팅 시작하기</a>
             </li>
             <li class="nav-item">
-              <a href="#main" class="nav-link text-wrapper-3">메인 화면으로 돌아가기</a>
+              <a href="{% url 'chat:main' %}" class="nav-link text-wrapper-3">메인 화면으로 돌아가기</a>
             </li>
           </ul>
           <section class="chat-history-section">
@@ -78,33 +78,31 @@
         </div>
       </aside>
 
-  <h1 style="margin: 40px 0 0 360px; color:#55609a;">Auto FIX</h1>
       <main class="main-content" role="main">
-
         <header class="page-header">
           <h1 class="page-title">Auto FIX</h1>
         </header>
-
+      
         <section class = 'vehicle-center'>
             <div class="toggle-wrap">
               <div class="toggle-row">
                 <div class="toggle-col">
                   <div class="toggle-label">차량 제조사를 선택해 주세요.</div>
-                  <select id="maker" class="select">
-                    <option value="">제조사 선택하기</option>
-                    {% for m in makers %}
-                      <option value="{{ m }}">{{ m }}</option>
-                    {% endfor %}
-                  </select>
+                    <select id="maker" class="select">
+                      <option value="">제조사 선택하기</option>
+                        {% for m in makers %}
+                          <option value="{{ m }}">{{ m }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-            
+              
                 <div class="toggle-col">
                   <div class="toggle-label">차량 모델을 선택해 주세요.</div>
-                  <select id="model" class="select" disabled>
-                    <option value="">모델 선택하기</option>
-                  </select>
+                    <select id="model" class="select" disabled>
+                      <option value="">모델 선택하기</option>
+                    </select>
                 </div>
-            
+              
                 <div class="toggle-col">
                   <div class="toggle-label">엔진을 선택해 주세요.</div>
                   <select id="engine" class="select" disabled>
@@ -114,8 +112,8 @@
               </div>
             </div>
         </section>
-    </main>
-  </div>
+      </main>
+    </div>
 
   <!-- ✅ 모달 영역 -->
   <div id="modal" class="modal">
@@ -219,12 +217,12 @@
           .done(function(r){
             if (r.ok && r.chat_url){
               window.location.href = r.chat_url; // ✅ 채팅 페이지로 이동
-            }else{
-              alert("저장 실패");
+            } else {
+              alert("저장 실패: " + JSON.stringify(r));
             }
           })
-          .fail(function(){
-            alert("오류가 발생했습니다.");
+          .fail(function(xhr){
+            alert("요청 실패 " + xhr.status + " : " + (xhr.responseText || ""));
           });
       });
     });

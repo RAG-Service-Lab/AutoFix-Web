@@ -21,16 +21,16 @@
           <div class="logo-container">
             <img
               class="auto-fix-logo"
-              src="{% static 'chat/img/auto_fix_logo_chat.png' %}"
+              src="{% static 'images/chat/auto_fix_logo_chat.png' %}"
               alt="Auto FIX 로고"
             />
           </div>
           <ul class="nav-list">
             <li class="nav-item">
-              <a href="#new-chat" id="newChatBtn" class="nav-link text-wrapper-2">새 채팅 시작하기</a>
+              <a href="{% url 'chat:toggles_page' %}" id="newChatBtn" class="nav-link text-wrapper-2">새 채팅 시작하기</a>
             </li>
             <li class="nav-item">
-              <a href="#main" class="nav-link text-wrapper-3">메인 화면으로 돌아가기</a>
+              <a href="{% url 'chat:main' %}" class="nav-link text-wrapper-3">메인 화면으로 돌아가기</a>
             </li>
           </ul>
           <section class="chat-history-section">
@@ -38,10 +38,68 @@
           </section>
         </nav>
         <div class="sidebar-footer">
+          <a href="javascript:void(0);" id="deleteAccountBtn" class="footer-link text-wrapper-9">회원 탈퇴</a>
+          <a href="javascript:void(0);" id="openModalBtn2" class="footer-link text-wrapper-8">비밀번호 수정</a>
           <a href="#profile" class="footer-link text-wrapper-6">회원 정보 수정</a>
           <a href="#logout" class="footer-link text-wrapper-5">로그아웃</a>
         </div>
       </aside>
+
+      <!-- ✅ 모달 영역 -->
+      <div id="modal" class="modal">
+        <div id="modalBody" class="modal-body"></div>
+      </div>
+
+      <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const modal     = document.getElementById('modal');
+        const modalBody = document.getElementById('modalBody');
+        const openBtn2  = document.getElementById('openModalBtn2');
+        const deleteBtn = document.getElementById('deleteAccountBtn');
+      
+        // ---- 회원탈퇴 버튼
+        if (deleteBtn) {
+          deleteBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (confirm("정말로 회원 탈퇴를 진행하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+              window.location.href = "{% url 'chat:signout' %}";
+            }
+          });
+        } else {
+          console.warn('[chat] #deleteAccountBtn not found');
+        }
+      
+        // ---- 비밀번호 수정 모달
+        if (openBtn2 && modal && modalBody) {
+          openBtn2.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+              // 모달 먼저 열기
+              modal.style.display = 'flex';
+              modalBody.innerHTML = '<p style="text-align:center;">로딩 중...</p>';
+            
+              const res = await fetch("{% url 'uauth:reset_password' %}");
+              if (!res.ok) throw new Error(`HTTP ${res.status}`);
+              const html = await res.text();
+            
+              // XSS 회피 최소 처리
+              const safe = html.replace(/"/g, '&quot;');
+              modalBody.innerHTML = `<iframe srcdoc="${safe}"></iframe>`;
+            } catch (err) {
+              console.error('[chat] reset_password load failed:', err);
+              modalBody.innerHTML = `<p style="color:red;">불러오기 실패: ${err.message}</p>`;
+            }
+          });
+        
+          // 모달 배경 클릭 시 닫기
+          modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+          });
+        } else {
+          console.warn('[chat] modal/openBtn2 not found', { openBtn2, modal, modalBody });
+        }
+      });
+      </script>
 
       <!-- ✅ 메인 콘텐츠 -->
       <main class="main-content" role="main">
@@ -78,20 +136,6 @@
         </div>
       </main>
     </div>
-
-    <!-- 새 채팅 불러오기 -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const newChatBtn = document.getElementById("newChatBtn");
-          if (newChatBtn) {
-            newChatBtn.addEventListener("click", function (e) {
-              e.preventDefault();      // 링크 이동 막기
-              window.location.reload(); // 같은 창에서 새로고침
-            });
-          }
-        });
-    </script>
-
 
     <!-- ✅ jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

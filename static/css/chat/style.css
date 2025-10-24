@@ -640,7 +640,7 @@
   top: 800px;
   left: 56px;
   height: 31px;
-  font-family: "Pretendard-Medium", Helvetica;ㄴ
+  font-family: "Pretendard-Medium", Helvetica;
   font-weight: 500;
   color: #4d4d4d;
   font-size: 26px;
@@ -746,7 +746,7 @@
   bottom: 40px;
   left: 60%;
   transform: translateX(-50%);
-  width: 60%;
+  width: 100%;
   max-width: 1100px;
   background-color: #fff;
   border: 2px solid #56579e;
@@ -864,10 +864,13 @@
 /* 토글 */
 /* ===== 차량 선택 토글 영역 ===== */
 .vehicle-center {
+  position: absolute;
   max-width: 1200px;           /* 토글 덩어리 최대 너비 */
   margin: 10px auto 0;         /* 좌우 중앙 + 위쪽 약간의 간격 */
   padding: 0 24px;             /* 양옆 여유 */
   text-align: flex-end;          /* 라벨 기본 가운데 */
+  left: 0px; 
+  top: 200px; 
 }
 
 /* 제목과 토글 사이 간격 */
@@ -937,3 +940,16 @@
     width: 100%;
   }
 }
+
+/* 모달 */
+#modal{
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.4);
+  z-index: 9999;
+  align-items:center; justify-content:center;
+}
+#modal .modal-body{
+  width:600px; height:600px; background:#fff;
+  border-radius:16px; overflow:hidden;
+}
+#modal .modal-body iframe{ width:100%; height:100%; border:0; }

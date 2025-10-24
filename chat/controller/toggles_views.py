@@ -1,6 +1,7 @@
 # chat/toggles_views.py
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.urls import reverse
 
 # ---- 예시 데이터 (DB 연동 전 테스트용) ----
 VEHICLE_TREE = {
@@ -16,13 +17,14 @@ VEHICLE_TREE = {
     },
 }
 
+
 def toggles_page(request):
-    """
-    토글 페이지 렌더링 (드롭다운 3개)
-    """
     picked = request.session.get("vehicle", {"maker": "", "model": "", "engine": ""})
-    makers = list(VEHICLE_TREE.keys())
-    return render(request, "chat/toggles.html", {"makers": makers, "picked": picked})
+    vehicle_summary = ""
+    if all(picked.get(k) for k in ("maker","model","engine")):
+        vehicle_summary = f'{picked["maker"]} > {picked["model"]} > {picked["engine"]}'
+    context = { "makers": ["현대", "기아"], "picked": picked, "vehicle_summary": vehicle_summary}
+    return render(request, "chat/toggles.html", context)
 
 
 def vehicle_options(request):
@@ -51,23 +53,12 @@ def vehicle_options(request):
 
 
 def set_vehicle_and_go_chat(request):
-    """
-    엔진까지 선택 완료 후 호출(POST).
-    세션에 저장하고 채팅 페이지로 이동시키기 위한 URL을 내려준다.
-    """
-    if request.method != "POST":
-        return JsonResponse({"ok": False}, status=405)
-
-    maker = request.POST.get("maker", "")
-    model = request.POST.get("model", "")
-    engine = request.POST.get("engine", "")
-
+    maker = request.POST.get("maker")
+    model = request.POST.get("model")
+    engine = request.POST.get("engine")
     if not (maker and model and engine):
-        return JsonResponse({"ok": False, "msg": "invalid"}, status=400)
-
+        return JsonResponse({"ok": False, "error": "모든 항목을 선택해야 합니다."})
+    
     request.session["vehicle"] = {"maker": maker, "model": model, "engine": engine}
-    label = f"{maker} > {model} > {engine}"
-    # 프론트에서 이 url로 location.href 이동
-    from django.urls import reverse
-    chat_url = reverse("chat:chat_page")
-    return JsonResponse({"ok": True, "label": label, "chat_url": chat_url})
+    chat_url = reverse("chat:chat_response")
+    return JsonResponse({"ok": True, "chat_url": chat_url})
