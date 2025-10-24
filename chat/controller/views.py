@@ -4,7 +4,6 @@ from django.views.decorators.http import require_GET, require_POST
 
 # 메인 화면
 def main(request):
-
     return render(request, 'main/main.html')
 
 def index(request):

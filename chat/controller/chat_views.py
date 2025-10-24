@@ -7,7 +7,7 @@ from django.views.decorators.http import require_GET, require_POST, require_http
 def chat_response(request):
     if request.method == "GET":
         # 페이지 렌더(브라우저로 직접 /chat/response/ 열 때)
-        picked = request.session.get("vehicle", {"maker":"", "model":"", "engine":""})
+        picked = request.session.get("brand", {"maker":"", "model":"", "engine":""})
         vehicle_summary = ""
         if all(picked.get(k) for k in ("maker","model","engine")):
             vehicle_summary = f'{picked["maker"]} > {picked["model"]} > {picked["engine"]}'
