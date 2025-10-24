@@ -74,7 +74,7 @@
           <a href="javascript:void(0);" id="deleteAccountBtn" class="footer-link text-wrapper-9">회원 탈퇴</a>
           <a href="javascript:void(0);" id="openModalBtn2" class="footer-link text-wrapper-8">비밀번호 수정</a>
           <a href="#profile" class="footer-link text-wrapper-6">회원 정보 수정</a>
-          <a href="#logout" class="footer-link text-wrapper-5">로그아웃</a>
+          <a href="{% url 'uauth:logout' %}" class="footer-link text-wrapper-5">로그아웃</a>
         </div>
       </aside>
 
@@ -83,23 +83,24 @@
           <h1 class="page-title">Auto FIX</h1>
         </header>
       
-        <section class = 'vehicle-center'>
+        <section class='vehicle-center'>
           <div class="toggle-row">
             <div class="toggle-col">
               <div class="toggle-label">차량 제조사를 선택해 주세요.</div>
-                <select id="maker" class="select">
-                  <option value="">제조사 선택하기</option>
-                    {% for m in makers %}
-                      <option value="{{ m }}">{{ m }}</option>
-                    {% endfor %}
-                </select>
+              <select id="maker" class="select">
+                <option value="">제조사 선택하기</option>
+                {% for m in makers %}
+                  <option value="{{ m }}">{{ m }}</option>
+                {% endfor %}
+              </select>
             </div>
           
             <div class="toggle-col">
               <div class="toggle-label">차량 모델을 선택해 주세요.</div>
-                <select id="model" class="select" disabled>
-                  <option value="">모델 선택하기</option>
-                </select>
+
+              <select id="model" class="select" disabled>
+                <option value="">모델 선택하기</option>
+              </select>
             </div>
           
             <div class="toggle-col">
@@ -139,6 +140,15 @@
       e.preventDefault();
       if (confirm("정말로 회원 탈퇴를 진행하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
         window.location.href = "{% url 'uauth:signout' %}";
+      }
+    });
+
+    window.addEventListener('message', function(event) {
+      // iframe srcdoc일 때는 origin 체크 제거
+      if (event.data && event.data.type === 'resetComplete') {
+        const modal = document.getElementById('modal');
+        if (modal) modal.style.display = 'none';
+        window.location.href = "{% url 'uauth:logout' %}";
       }
     });
 

@@ -33,7 +33,8 @@
         <p class="p">차량에 대한 물음표를 느낌표로 바꿔드립니다.</p>
       </section>
       <section class="cta-section">
-        <a href="{% url 'uauth:login' %}" class="rectangle" aria-label="Auto Fix 시작하기">
+        <a href="{% if user.is_authenticated %}{% url 'chat:toggles_page' %}{% else %}{% url 'uauth:login' %}{% endif %}" 
+          class="rectangle" aria-label="Auto Fix 시작하기">
           <span class="auto-fix">Auto Fix 시작하기 &gt;</span>
         </a>
       </section>

@@ -24,8 +24,8 @@
         .logo {
             position: absolute;
             top: 40px;
-            left: 45px;
-            font-size: 24px;
+            left: 90px;
+            font-size: 50px;
             font-weight: 700;
             color: #B3BFE9; 
         }
@@ -177,7 +177,7 @@
 </head>
 <body>
 
-    <div class="logo">&lt;</div>
+    <div class="logo" id="logo" style="cursor:pointer;">&lt;</div>
 
     <div class="login-container">
         <h1>Auto FIX</h1>
@@ -234,6 +234,10 @@
         const openBtn2 = document.getElementById('openModalBtn2');
         const modal = document.getElementById('signupModal');
         const modalBody = document.getElementById('modal-body');
+
+        document.getElementById("logo").addEventListener("click", () => {
+            window.location.href = "{% url 'chat:main' %}";  // 홈 URL로 이동
+        });
 
         openBtn1.addEventListener('click', async (e) => {
             e.preventDefault();
