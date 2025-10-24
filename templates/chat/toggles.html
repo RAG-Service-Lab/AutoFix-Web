@@ -4,14 +4,14 @@
 <head>
   <meta charset="utf-8" />
   <title>차량 선택</title>
-  <link rel="stylesheet" href="{% static 'css/chat/style_v1.css' %}">
+  <link rel="stylesheet" href="{% static 'css/chat/style.css' %}">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <style>
     /* 최소한의 토글 레이아웃 (원하는 곳에 합쳐도 됩니다) */
     .toggle-wrap{ margin:40px 0 0 360px; }
     .toggle-row{ display:flex; gap:36px; align-items:flex-start; margin-top:12px; }
-    .toggle-col{ width:300px; }
+    .toggle-col{ width:360px; }
     .toggle-label{ font-weight:600; color:#666; margin-bottom:10px; }
     .select{
       width:100%; height:48px; border:2px solid #56579e; border-radius:12px;
@@ -83,24 +83,23 @@
           <h1 class="page-title">Auto FIX</h1>
         </header>
       
-        <section class="vehicle-center">
-          <!--toggle.wrap 부분 제거-->
+        <section class = 'vehicle-center'>
           <div class="toggle-row">
             <div class="toggle-col">
               <div class="toggle-label">차량 제조사를 선택해 주세요.</div>
-              <select id="maker" class="select">
-                <option value="">제조사 선택하기</option>
-                {% for m in makers %}
-                  <option value="{{ m }}">{{ m }}</option>
-                {% endfor %}
-              </select>
+                <select id="maker" class="select">
+                  <option value="">제조사 선택하기</option>
+                    {% for m in makers %}
+                      <option value="{{ m }}">{{ m }}</option>
+                    {% endfor %}
+                </select>
             </div>
           
             <div class="toggle-col">
               <div class="toggle-label">차량 모델을 선택해 주세요.</div>
-              <select id="model" class="select" disabled>
-                <option value="">모델 선택하기</option>
-              </select>
+                <select id="model" class="select" disabled>
+                  <option value="">모델 선택하기</option>
+                </select>
             </div>
           
             <div class="toggle-col">
@@ -113,6 +112,7 @@
         </section>
       </main>
     </div>
+    
 
   <!-- ✅ 모달 영역 -->
   <div id="modal" class="modal">

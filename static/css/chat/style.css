@@ -277,7 +277,7 @@
 }
 
 /* textarea 말풍선 */
-.chat-textarea, .chat-input {
+.chat-textarea {
   flex: 1;
   min-height: 56px;
   max-height: 160px;
