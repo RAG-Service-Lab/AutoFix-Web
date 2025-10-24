@@ -1,5 +1,6 @@
 # chat/toggles_views.py
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.urls import reverse
 
@@ -17,7 +18,7 @@ VEHICLE_TREE = {
     },
 }
 
-
+@login_required(login_url='uauth:login')
 def toggles_page(request):
     picked = request.session.get("vehicle", {"maker": "", "model": "", "engine": ""})
     vehicle_summary = ""

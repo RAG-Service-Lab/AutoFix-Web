@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from uauth.entity.models import UserForm
 from rest_framework.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required
 
 uauth_service = UAuthServiceImpl.get_instance()
 
@@ -20,7 +21,6 @@ class MyLoginView(LoginView):
     def form_invalid(self, form):
         print("로그인 실패:", form.errors)  # 터미널에 오류 출력
         return super().form_invalid(form)
-
 
 class SendVerificationCodeView(APIView):
     def post(self, request):
@@ -38,7 +38,6 @@ class SendVerificationCodeView(APIView):
         except ValidationError as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
 class VerifyCodeView(APIView):
     def post(self, request):
         email = request.data.get("email")
@@ -50,7 +49,6 @@ class VerifyCodeView(APIView):
             return Response({"message": "인증이 완료되었습니다."}, status=status.HTTP_200_OK)
         except ValidationError as e:
             return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UserRegisterView(APIView):
     def post(self, request):
