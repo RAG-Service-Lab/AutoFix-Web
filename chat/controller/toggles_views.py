@@ -1,6 +1,7 @@
 # chat/toggles_views.py
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.db import connections
 from django.shortcuts import render
 from django.urls import reverse
 from django.db import connection
@@ -25,7 +26,7 @@ def toggles_page(request):
     첫 화면: 제조사 리스트만 내려줌 (SELECT DISTINCT vehicle)
     """
     # makers 가져오기
-    with connection.cursor() as cur:
+    with connections['car_db'].cursor() as cur:
         cur.execute("""
             SELECT DISTINCT brand
             FROM car_info
@@ -57,7 +58,7 @@ def vehicle_options(request):
     # 모델 목록
     if maker and not model:
         # models = list(VEHICLE_TREE.get(maker, {}).keys())
-        with connection.cursor() as cur:
+        with connections['car_db'].cursor() as cur:
             cur.execute("""
                 SELECT DISTINCT model
                 FROM car_info
@@ -70,7 +71,7 @@ def vehicle_options(request):
     # 엔진 목록
     if maker and model:
         # engines = VEHICLE_TREE.get(maker, {}).get(model, [])
-        with connection.cursor() as cur:
+        with connections['car_db'].cursor() as cur:
             cur.execute("""
                 SELECT DISTINCT engine
                 FROM car_info
