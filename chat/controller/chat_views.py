@@ -59,3 +59,7 @@ def set_vehicle(request):
         return JsonResponse({'ok': True, 'chat_url': chat_url})
 
     return JsonResponse({'ok': False, 'error': 'Invalid request'})
+
+# 긴급연락|보험사 모달
+def info_content(request):
+    return render(request, 'chat/info_content.html')  # Ajax로 불러올 모달 내용

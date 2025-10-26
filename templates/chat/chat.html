@@ -204,5 +204,56 @@
         }
       });  
     </script>
+
+    <!--긴급연락|보험 부분-->
+    <div id="floatingContainer">
+      <div id="infoModal" class="modal">
+        <div class="modal-content">
+          <button class="close-btn" id="closeModalBtn">&times;</button>
+          <div id="infoModalBody" class="modal-body">로딩 중...</div>
+        </div>
+      </div>
+    
+      <img id="emergencyIcon" src="{% static 'images/chat/info.png' %}" alt="긴급연락/보험사" />
+    </div>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const modal = document.getElementById('infoModal');
+      const modalBody = document.getElementById('infoModalBody');
+      const openBtn = document.getElementById('emergencyIcon');
+      const closeBtn = document.getElementById('closeModalBtn');
+    
+      openBtn.addEventListener('click', () => {
+        if (modal.style.display === 'block') {
+          modal.classList.remove('show');
+          setTimeout(() => modal.style.display = 'none', 200);
+          return;
+        }
+      
+        modal.style.display = 'block';
+        modal.classList.add('show');
+      
+        fetch("{% url 'chat:info' %}")
+          .then(res => {
+            console.log('[fetch status]', res.status);
+            return res.text();
+          })
+          .then(html => {
+            console.log('[fetch html]', html);
+            modalBody.innerHTML = html;
+          })
+          .catch(err => {
+            console.error('[fetch error]', err);
+            modalBody.innerHTML = `<p style="color:red;">에러 발생: ${err}</p>`;
+          });
+      });
+    
+      closeBtn.addEventListener('click', () => {
+        modal.classList.remove('show');
+        setTimeout(() => modal.style.display = 'none', 200);
+      });
+    });
+    </script>
   </body>
 </html>
