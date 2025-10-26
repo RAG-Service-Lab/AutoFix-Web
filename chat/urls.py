@@ -17,4 +17,5 @@ urlpatterns = [
     path("vehicle/", toggles_views.vehicle_options, name="vehicle_options"),
     path("set_vehicle/", toggles_views.set_vehicle_and_go_chat, name="set_vehicle"),
     path("response/", chat_views.chat_response, name="chat_response"),
+    path("info/", chat_views.info_content, name="info"),  # ✅ 모달 Ajax용 추가
 ]
