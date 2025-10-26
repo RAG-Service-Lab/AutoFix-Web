@@ -170,8 +170,6 @@
 }
 
 
-
-
 /* ===== 차량 선택 토글 ===== */
 .vehicle-center {
   display: flex;
@@ -373,7 +371,8 @@
 }
 #modal .modal-body {
   width: clamp(300px, 35vw, 600px);
-  height: clamp(300px, 35vw, 600px);
+  height: 85vh; /* ✅ 화면 높이 기준 비율 */
+  max-height: 700px; /* ✅ 너무 커지지 않도록 제한 */
   background: #fff;
   border-radius: 16px;
   overflow: hidden;
