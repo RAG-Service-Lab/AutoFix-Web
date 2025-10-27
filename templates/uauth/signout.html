@@ -1,135 +1,198 @@
-<!-- 1️⃣ 전체 배경 -->
-<div style="
-  position: fixed;
-  inset: 0;
-  background: #EFF4FF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-">
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>회원 탈퇴 | Auto FIX</title>
 
-  <!-- 2️⃣ 고정 해상도 콘텐츠 (1920x1080) -->
-  <div id="fixed-canvas" style="
-    position: relative;
-    width: 1920px;
-    height: 1080px;
-    transform-origin: top left;
-  ">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <!-- 3️⃣ 실제 UI 콘텐츠 -->
-    <div style="width: 100px; height: 122px; left: 116px; top: 70px; position: absolute; text-align: center; color: #AEC3EF; font-size: 75px; font-family: Pretendard; font-weight: 900;">&lt;</div>
-    
-    <div style="width: 756px; height: 868px; left: 582px; top: 110px; position: absolute; background: white; border-radius: 30px;"></div>
-    
-    <div style="width: 629px; height: 103px; left: 645px; top: 142px; position: absolute; display: flex; justify-content: center; align-items: center; color: #56609B; font-size: 48px; font-family: Pretendard; font-weight: 600;">회원 탈퇴</div>
-    
-    <!-- 비밀번호 입력 박스 -->
-    <div style="width: 613px; height: 75px; left: 645px; top: 323px; position: absolute; border-radius: 30px; border: 1.5px solid #56609B;"></div>
-    
-    <input type="password" name="password1" id="password1"
-         placeholder="비밀번호를 입력해 주세요."
-         value="{{ form.password1.value|default:'' }}"
-         style="position: absolute; left: 676px; top: 343px; z-index: 10; border:none; outline:none; font-size:24px; font-family:Pretendard; font-weight:500;">
-    
-    <div style="width: 613px; height: 75px; left: 645px; top: 414px; position: absolute; border-radius: 30px; border: 1.5px solid #56609B;"></div>
-    
-    <input type="password" name="password2" id="password2"
-         placeholder="비밀번호 확인"
-         value="{{ form.password2.value|default:'' }}"
-         style="position: absolute; left: 676px; top: 432px; z-index: 10; border:none; outline:none; font-size:24px; font-family:Pretendard; font-weight:500;">
-    
-    <!-- 피드백 메시지 -->
-    <div id="password-feedback" style="position:absolute; left:676px; top:520px; color:red; font-size:16px;"></div>
-
-    <!-- 탈퇴 버튼 -->
-    <button type="button"
-      style="width: 328px; height: 65px; left: 922px; top: 853px; position: absolute; background: #FF0000; border-radius: 30px; display: flex; align-items: center; justify-content: center; border:none; color:white; font-size:26px; font-family:Pretendard; font-weight:600; cursor:pointer; z-index:10;">
-      탈퇴
-    </button>
-
-    <!-- CSRF 토큰 -->
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-
-  </div>
-</div>
-
-<script>
-function resizeCanvas() {
-  const canvas = document.getElementById("fixed-canvas");
-  const designWidth = 1920;
-  const designHeight = 1080;
-
-  const scale = Math.min(
-    window.innerWidth / designWidth,
-    window.innerHeight / designHeight
-  ) * 0.8;
-
-  // 중앙 정렬 + 살짝 아래로 이동
-  const offsetX = (window.innerWidth - designWidth * scale) / 2;
-  const offsetY = (window.innerHeight - designHeight * scale) / 2 + 50;
-
-  canvas.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
-}
-
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
-
-document.addEventListener('DOMContentLoaded', () => {
-  const pw1 = document.getElementById('password1');
-  const pw2 = document.getElementById('password2');
-  const feedback = document.getElementById('password-feedback');
-  const deleteBtn = document.querySelector('button[type="button"]');
-  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-  // 비밀번호 일치 여부만 체크
-  function updateFeedback() {
-    if (pw1.value && pw2.value && pw1.value !== pw2.value) {
-      feedback.classList.add('error');
-      feedback.classList.remove('success');
-      feedback.innerHTML = "비밀번호가 일치하지 않습니다.";
-    } else {
-      feedback.innerHTML = "";
-      feedback.classList.remove('error');
-      feedback.classList.remove('success');
-    }
+  body {
+    background-color: #F8F9FE;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
   }
 
-  pw1.addEventListener('input', updateFeedback);
-  pw2.addEventListener('input', updateFeedback);
+  .logo {
+    position: absolute;
+    top: 40px;
+    left: 90px;
+    font-size: 50px;
+    font-weight: 700;
+    color: #B3BFE9;
+    cursor: pointer;
+  }
 
-  // 탈퇴 버튼 클릭
-  deleteBtn.addEventListener('click', async () => {
-    if (pw1.value !== pw2.value) {
-      alert("비밀번호가 일치하지 않습니다.");
-      return;
+  /* 🔹 로그인 페이지와 동일한 카드 레이아웃 */
+  .withdraw-container {
+    background-color: #ffffff;
+    padding: 50px 40px;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+    width: 400px;
+    min-height: 500px; /* ✅ 최소 높이 고정 (폰트 줄여도 안정) */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 내부 중앙정렬 */
+  }
+
+  .withdraw-container h1 {
+    font-size: 45px; /* 로그인 제목보다 약간 작게 */
+    font-weight: 900;
+    color: #55609a;
+    margin-bottom: 40px; /* 아래 여백 늘려 균형 맞춤 */
+  }
+
+  .withdraw-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 🔹 인풋 스타일 로그인 페이지와 동일 */
+  .withdraw-form input[type="password"] {
+    width: 100%;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    border: 1px solid #55609a;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #333;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .withdraw-form input[type="password"]:focus {
+    border-color: #9ea2f0;
+  }
+
+  .withdraw-form input::placeholder {
+    color: #A0A5B4;
+    font-size: 15px;
+  }
+
+  /* 🔹 피드백 공간 고정 (레이아웃 흔들림 방지) */
+  #password-feedback {
+    min-height: 18px;
+    color: red;
+    font-size: 14px;
+    margin: 2px 0 10px;
+    text-align: left;
+  }
+
+  /* 🔹 탈퇴 버튼 */
+  .delete-btn {
+    width: 50%;
+    padding: 10px;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: Regular;
+    cursor: pointer;
+    background: #FF4B4B;
+    color: #fff;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+    align-self: flex-end;
+  }
+
+  .delete-btn:hover {
+    background: #e03b3b;
+  }
+
+  @media (max-width: 768px) {
+    .withdraw-container {
+      width: 90%;
+      padding: 40px 25px;
     }
+    .withdraw-container h1 {
+      font-size: 36px;
+    }
+  }
+</style>
+</head>
 
-    if (!confirm("정말로 회원탈퇴 하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) return;
+<body>
+  <div class="logo" id="logo">&lt;</div>
 
-    try {
-      const response = await fetch("{% url 'uauth:delete_account' %}", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken,
-        },
-        body: JSON.stringify({ password: pw1.value }),
-      });
+  <div class="withdraw-container">
+    <h1>회원 탈퇴</h1>
 
-      const result = await response.json();
+    <form class="withdraw-form" id="withdrawForm">
+      {% csrf_token %}
+      <input type="password" name="password1" id="password1"
+             placeholder="비밀번호를 입력해 주세요."
+             value="{{ form.password1.value|default:'' }}">
+      <input type="password" name="password2" id="password2"
+             placeholder="비밀번호 확인"
+             value="{{ form.password2.value|default:'' }}">
+      <div id="password-feedback"></div>
+      <button type="button" class="delete-btn" id="deleteBtn">탈퇴</button>
+    </form>
+  </div>
 
-      if (!response.ok) {
-        alert(result.message || "회원탈퇴 중 오류가 발생했습니다.");
-        return;
+  <script>
+    document.getElementById("logo").addEventListener("click", () => {
+      window.location.href = "{% url 'chat:main' %}";
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const pw1 = document.getElementById('password1');
+      const pw2 = document.getElementById('password2');
+      const feedback = document.getElementById('password-feedback');
+      const deleteBtn = document.getElementById('deleteBtn');
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+      function updateFeedback() {
+        if (pw1.value && pw2.value && pw1.value !== pw2.value) {
+          feedback.innerHTML = "비밀번호가 일치하지 않습니다.";
+        } else {
+          feedback.innerHTML = "";
+        }
       }
 
-      alert(result.message || "회원탈퇴가 완료되었습니다.");
-      window.location.href = "/chat/main";
-    } catch (err) {
-      console.error(err);
-      alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
-    }
-  });
-});
-</script>
+      pw1.addEventListener('input', updateFeedback);
+      pw2.addEventListener('input', updateFeedback);
+
+      deleteBtn.addEventListener('click', async () => {
+        if (pw1.value !== pw2.value) {
+          alert("비밀번호가 일치하지 않습니다.");
+          return;
+        }
+
+        if (!confirm("정말로 회원탈퇴 하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) return;
+
+        try {
+          const response = await fetch("{% url 'uauth:delete_account' %}", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken,
+            },
+            body: JSON.stringify({ password: pw1.value }),
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            alert(result.message || "회원탈퇴 중 오류가 발생했습니다.");
+            return;
+          }
+
+          alert(result.message || "회원탈퇴가 완료되었습니다.");
+          window.location.href = "/chat/main";
+        } catch (err) {
+          console.error(err);
+          alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
