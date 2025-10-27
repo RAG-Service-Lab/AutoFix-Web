@@ -21,7 +21,8 @@ app_password = os.getenv("APP_PASS")
 db_password1 = os.getenv("SQL_PASS1")
 db_password2 = os.getenv("SQL_PASS2")
 port = os.getenv("PORT")
-
+host = os.getenv("HOST")
+db_user = os.getenv("DB_USER")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,13 +32,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&4i4^&19^$$n)e4jv0ezyb&@*)^+c=2+y($nuw4@q=kgs^0^as'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = [] developer mode
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "3.34.166.198"]
 
+#  for developer mode, remove
+CSRF_TRUSTED_ORIGINS = [                                                                                                      
+    "http://3.34.166.198",                                                                                                    
+    "http://3.34.166.198:8080"                                                                                                
+]        
 
 # Application definition
 
@@ -85,25 +92,25 @@ WSGI_APPLICATION = 'chatbot.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+# host='127.0.0.1', name='autofix'/'sknTeam6' password='autofix'/'0000' for developer mode
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'autofixdb',
-        'USER': 'autofix',
+        'USER': db_user,
         'PASSWORD': db_password1,
-        'HOST': '127.0.0.1',
+        'HOST': host,
         'PORT': port,
         'OPTIONS': {
             'charset': 'utf8mb4'
         }, 
     }, 
-    'default': {
+    'car_db': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'car_db',
-        'USER': 'sknTeam6',
+        'USER': db_user,
         'PASSWORD': db_password2,
-        'HOST': '127.0.0.1',
+        'HOST': host,
         'PORT': port,
         'OPTIONS': {
             'charset': 'utf8mb4'
@@ -136,9 +143,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'ko-kr'
+LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Seoul'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -149,8 +156,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') 
+# STATICFILES_DIRS = [BASE_DIR / 'static'] for developer mode
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -168,3 +175,6 @@ EMAIL_HOST_USER = email_address  # 또는 직접 문자열로 "example@gmail.com
 EMAIL_HOST_PASSWORD = app_password  # 앱 비밀번호
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')                                                                            
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
