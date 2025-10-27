@@ -1,4 +1,12 @@
-# Python 캐시
 __pycache__/
 *.pyc
-.env
+*.pyo
+*.pyd
+*.sqlite3
+
+venv/
+.env/
+*.env
+
+.vscode/
+.idea/
