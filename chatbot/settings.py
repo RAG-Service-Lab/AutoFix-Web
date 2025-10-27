@@ -98,7 +98,7 @@ DATABASES = {
             'charset': 'utf8mb4'
         }, 
     }, 
-    'car_db': {
+    'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'car_db',
         'USER': 'sknTeam6',
