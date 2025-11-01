@@ -101,19 +101,13 @@ def signup(request):
     if request.method == 'POST':
         form = UserForm(request.POST, request.FILES)
         if form.is_valid():
-            user = uauth_service.create(form)
-            username = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password1')
-            user = auth.authenticate(username=username, password=password)
-            auth.login(request, user)
+            uauth_service.create(form)
+            return JsonResponse({'success': True})
         else:
-            print('form invalid')
-            print(form.errors)
-            return redirect('uauth:login')
+            return JsonResponse({'success': False, 'error': form.errors.as_json()})
     else:
         form = UserForm()
-
-    return render(request, 'uauth/signup.html', {'form':form})
+        return render(request, 'uauth/signup.html', {'form': form})
 
 def signout(request):
 

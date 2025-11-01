@@ -20,14 +20,12 @@ class UserForm(UserCreationForm):
         model = User
         fields = ('email', 'password1', 'password2')
 
-    def save(self, commit=True):
+    def save(self):
         user = super().save(commit=False)
         user.username = self.cleaned_data['email']
         user.email = self.cleaned_data['email']
-        user.set_password(self.cleaned_data['password1'])  # ← 이거 추가
-        if commit:
-            user.save()
-        return user
+        user.set_password(self.cleaned_data['password1'])
+        user.save()
     
 class Verify(models.Model):
     email = models.EmailField(unique=True)

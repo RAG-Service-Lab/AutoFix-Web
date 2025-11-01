@@ -300,19 +300,46 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   });
 
-  form.addEventListener('submit', (e) => {
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
     const errors = validatePassword(pw1.value);
     if (errors.length > 0 || pw1.value !== pw2.value) {
-      e.preventDefault();
-      alert("비밀번호 조건을 확인하세요.");
-    } else {
-        e.preventDefault();
-        form.submit();
-        alert("회원가입이 완료되었습니다!");
-        // 부모(로그인 모달)에게 닫으라고 이벤트 보내기
-        if (window.parent) {
-          window.parent.postMessage({ type: 'signupComplete' }, '*');
+        alert("비밀번호 조건을 확인하세요.");
+        return;
+    }
+    const formData = new FormData(form);
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error('서버 오류');
         }
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert("회원가입이 완료되었습니다!");
+            if (window.parent) {
+                window.parent.postMessage({ type: 'signupComplete' }, '*');
+            }
+        } else {
+            let errorMsg = data.error;
+            try {
+                const errorsObj = JSON.parse(data.error);
+                errorMsg = Object.values(errorsObj)
+                                 .map(arr => arr.map(e => e.message).join(', '))
+                                 .join('\n');
+            } catch (_) {}
+            alert("회원가입 실패:\n" + errorMsg);
+        }
+    } catch (err) {
+        alert("요청 실패: " + err.message);
     }
   });
 });
